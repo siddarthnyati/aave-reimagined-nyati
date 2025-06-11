@@ -18,9 +18,13 @@ const NFTLoanInterface = ({ nft }: NFTLoanInterfaceProps) => {
   const [loanAmount, setLoanAmount] = useState([70]);
   const [loanDuration, setLoanDuration] = useState([30]);
 
-  const maxLoanValue = parseFloat(nft.maxLoan.replace(' ETH', ''));
+  // Add null checks and default values
+  const maxLoanString = nft.maxLoan || '0 ETH';
+  const interestString = nft.interest || '0% APR';
+  
+  const maxLoanValue = parseFloat(maxLoanString.replace(' ETH', ''));
   const requestedLoan = (maxLoanValue * loanAmount[0]) / 100;
-  const interestRate = parseFloat(nft.interest.replace('% APR', '')) / 100;
+  const interestRate = parseFloat(interestString.replace('% APR', '')) / 100;
 
   return (
     <div className="space-y-6">
@@ -74,7 +78,7 @@ const NFTLoanInterface = ({ nft }: NFTLoanInterfaceProps) => {
                 <CardContent className="p-4 space-y-2">
                   <div className="flex justify-between">
                     <span>Interest Rate</span>
-                    <span className="font-semibold">{nft.interest}</span>
+                    <span className="font-semibold">{interestString}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Total Interest</span>
@@ -118,15 +122,15 @@ const NFTLoanInterface = ({ nft }: NFTLoanInterfaceProps) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Interest Rate</span>
-                    <span className="font-semibold">{nft.interest}</span>
+                    <span className="font-semibold">{interestString}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Duration</span>
-                    <span className="font-semibold">{nft.duration}</span>
+                    <span className="font-semibold">{nft.duration || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Lender</span>
-                    <span className="font-mono text-sm">{nft.lender}</span>
+                    <span className="font-mono text-sm">{nft.lender || 'N/A'}</span>
                   </div>
                   {nft.activeUntil && (
                     <div className="flex justify-between">
