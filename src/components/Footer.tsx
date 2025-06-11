@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { TrendingUp, Twitter, Github, Discord, Telegram } from 'lucide-react';
+import { TrendingUp, Twitter, Github, MessageCircle, Send } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -26,10 +26,10 @@ const Footer = () => {
                 <Github className="w-5 h-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Discord className="w-5 h-5" />
+                <MessageCircle className="w-5 h-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Telegram className="w-5 h-5" />
+                <Send className="w-5 h-5" />
               </a>
             </div>
           </div>
