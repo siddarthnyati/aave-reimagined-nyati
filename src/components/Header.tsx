@@ -27,11 +27,14 @@ const Header = () => {
             <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors">
               Dashboard
             </Link>
+            <Link to="/staking" className="text-muted-foreground hover:text-primary transition-colors">
+              Staking
+            </Link>
+            <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
+              NFT Lending
+            </Link>
             <Link to="/governance" className="text-muted-foreground hover:text-primary transition-colors">
               Governance
-            </Link>
-            <Link to="/docs" className="text-muted-foreground hover:text-primary transition-colors">
-              Docs
             </Link>
           </nav>
 
@@ -62,11 +65,14 @@ const Header = () => {
               <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors">
                 Dashboard
               </Link>
+              <Link to="/staking" className="text-muted-foreground hover:text-primary transition-colors">
+                Staking
+              </Link>
+              <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
+                NFT Lending
+              </Link>
               <Link to="/governance" className="text-muted-foreground hover:text-primary transition-colors">
                 Governance
-              </Link>
-              <Link to="/docs" className="text-muted-foreground hover:text-primary transition-colors">
-                Docs
               </Link>
               <Button className="btn-primary w-full">
                 <Wallet className="w-4 h-4 mr-2" />
