@@ -11,6 +11,7 @@ import Markets from "./pages/Markets";
 import Governance from "./pages/Governance";
 import Staking from "./pages/Staking";
 import NFTLending from "./pages/NFTLending";
+import VentureVaults from "./pages/VentureVaults";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/governance" element={<Governance />} />
             <Route path="/staking" element={<Staking />} />
             <Route path="/nft-lending" element={<NFTLending />} />
+            <Route path="/venture-vaults" element={<VentureVaults />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

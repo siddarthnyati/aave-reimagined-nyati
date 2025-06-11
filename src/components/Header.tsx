@@ -58,6 +58,9 @@ const Header = () => {
               <Link to="/staking" className="text-muted-foreground hover:text-primary transition-colors">
                 Staking
               </Link>
+              <Link to="/venture-vaults" className="text-muted-foreground hover:text-primary transition-colors">
+                Venture Vaults
+              </Link>
               <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
                 NFT Lending
               </Link>
@@ -127,6 +130,9 @@ const Header = () => {
                 </Link>
                 <Link to="/staking" className="text-muted-foreground hover:text-primary transition-colors">
                   Staking
+                </Link>
+                <Link to="/venture-vaults" className="text-muted-foreground hover:text-primary transition-colors">
+                  Venture Vaults
                 </Link>
                 <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
                   NFT Lending
