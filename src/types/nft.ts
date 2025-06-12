@@ -4,6 +4,7 @@ export interface NFTItem {
   name: string;
   collection: string;
   image: string;
+  loanAmount: string;
   floorPrice: string;
   maxLoan: string;
   status: string;
