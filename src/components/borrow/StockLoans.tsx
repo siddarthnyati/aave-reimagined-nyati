@@ -1,15 +1,10 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
-import { TrendingUp, Shield, AlertCircle, Link as LinkIcon, CheckCircle, Loader2 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BrokerageConnection from './BrokerageConnection';
-import StockPortfolio from './StockPortfolio';
+import StockBorrowing from './StockBorrowing';
+import StockLending from './StockLending';
 
 const StockLoans = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -20,11 +15,39 @@ const StockLoans = () => {
     setIsConnected(true);
   };
 
+  const handleBrokerageDisconnect = () => {
+    setSelectedBrokerage(null);
+    setIsConnected(false);
+  };
+
   if (!isConnected) {
     return <BrokerageConnection onConnect={handleBrokerageConnect} />;
   }
 
-  return <StockPortfolio brokerage={selectedBrokerage!} />;
+  return (
+    <div className="space-y-6">
+      <Tabs defaultValue="borrow" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsTrigger value="borrow">Borrow Against Stocks</TabsTrigger>
+          <TabsTrigger value="lend">Lend to Stock Borrowers</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="borrow">
+          <StockBorrowing 
+            brokerage={selectedBrokerage!} 
+            onDisconnect={handleBrokerageDisconnect}
+          />
+        </TabsContent>
+
+        <TabsContent value="lend">
+          <StockLending 
+            brokerage={selectedBrokerage!} 
+            onDisconnect={handleBrokerageDisconnect}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
 
 export default StockLoans;

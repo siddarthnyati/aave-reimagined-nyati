@@ -5,11 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { TrendingUp, TrendingDown, DollarSign, PieChart, AlertTriangle, Target } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, PieChart, AlertTriangle, Target, Unlink, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface Stock {
   symbol: string;
@@ -25,13 +24,15 @@ interface Stock {
   selected: boolean;
 }
 
-interface StockPortfolioProps {
+interface StockBorrowingProps {
   brokerage: string;
+  onDisconnect: () => void;
 }
 
-const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
+const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
   const { toast } = useToast();
   const [loanAmount, setLoanAmount] = useState('');
+  const [validationError, setValidationError] = useState('');
   const [stocks, setStocks] = useState<Stock[]>([
     { symbol: 'AAPL', name: 'Apple Inc.', shares: 50, price: 182.52, dayChange: 2.14, marketValue: 9126, riskRating: 'A+', ltv: 70, maxLoan: 6388, sector: 'Technology', selected: false },
     { symbol: 'MSFT', name: 'Microsoft Corp.', shares: 30, price: 378.85, dayChange: -1.23, marketValue: 11366, riskRating: 'A+', ltv: 70, maxLoan: 7956, sector: 'Technology', selected: false },
@@ -54,20 +55,29 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
     ));
   };
 
+  const handleSelectAll = () => {
+    const allSelected = stocks.every(stock => stock.selected);
+    setStocks(prev => prev.map(stock => ({ ...stock, selected: !allSelected })));
+  };
+
+  const handleLoanAmountChange = (value: string) => {
+    setLoanAmount(value);
+    const amount = parseFloat(value);
+    
+    if (value && amount > maxLoanAmount) {
+      setValidationError(`Amount exceeds maximum loan of $${maxLoanAmount.toLocaleString()}`);
+    } else if (value && amount <= 0) {
+      setValidationError('Amount must be greater than 0');
+    } else {
+      setValidationError('');
+    }
+  };
+
   const handleRequestLoan = () => {
     if (!loanAmount || parseFloat(loanAmount) <= 0) {
       toast({
         title: "Invalid Amount",
         description: "Please enter a valid loan amount.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (parseFloat(loanAmount) > maxLoanAmount) {
-      toast({
-        title: "Amount Too High",
-        description: `Maximum loan amount is $${maxLoanAmount.toLocaleString()} based on selected collateral.`,
         variant: "destructive"
       });
       return;
@@ -91,11 +101,8 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
     }
   };
 
-  const averageRisk = selectedCount > 0 ? 
-    stocks.filter(s => s.selected).reduce((sum, stock) => {
-      const riskScore = { 'A+': 95, 'A': 90, 'A-': 85, 'B+': 80, 'B': 75, 'B-': 70, 'C+': 65 }[stock.riskRating] || 60;
-      return sum + riskScore;
-    }, 0) / selectedCount : 0;
+  const isLoanAmountValid = !validationError && loanAmount && parseFloat(loanAmount) > 0;
+  const allSelected = stocks.every(stock => stock.selected);
 
   return (
     <div className="space-y-8">
@@ -136,13 +143,11 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
 
         <Card className="glass-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Avg Risk Score</CardTitle>
+            <CardTitle className="text-lg">Interest Rate</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{averageRisk ? averageRisk.toFixed(0) : 0}/100</p>
-            <p className="text-sm text-muted-foreground">
-              {averageRisk >= 90 ? 'Excellent' : averageRisk >= 80 ? 'Good' : averageRisk >= 70 ? 'Fair' : 'Poor'}
-            </p>
+            <p className="text-2xl font-bold text-blue-600">4.8%</p>
+            <p className="text-sm text-muted-foreground">APR</p>
           </CardContent>
         </Card>
       </div>
@@ -160,9 +165,21 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
                 <p className="text-sm text-muted-foreground">Last sync: Just now</p>
               </div>
             </div>
-            <Badge variant="secondary" className="bg-green-100 text-green-700">
-              ✓ Connected
-            </Badge>
+            <div className="flex items-center gap-3">
+              <Badge variant="secondary" className="bg-green-100 text-green-700">
+                <CheckCircle2 className="w-3 h-3 mr-1" />
+                Connected
+              </Badge>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={onDisconnect}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Unlink className="w-4 h-4 mr-2" />
+                Disconnect
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -170,10 +187,21 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
       {/* Stock Portfolio Table */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Your Stock Portfolio</CardTitle>
-          <CardDescription>
-            Select stocks to use as collateral for your loan
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Your Stock Portfolio</CardTitle>
+              <CardDescription>
+                Select stocks to use as collateral for your loan
+              </CardDescription>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={handleSelectAll}
+              className="text-sm"
+            >
+              {allSelected ? 'Deselect All' : 'Select All'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -192,7 +220,10 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
             </TableHeader>
             <TableBody>
               {stocks.map((stock) => (
-                <TableRow key={stock.symbol} className={stock.selected ? 'bg-blue-50' : ''}>
+                <TableRow 
+                  key={stock.symbol} 
+                  className={stock.selected ? 'bg-blue-50 border-blue-200' : 'hover:bg-muted/50'}
+                >
                   <TableCell>
                     <Checkbox
                       checked={stock.selected}
@@ -252,22 +283,36 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="loanAmount">Loan Amount (USD)</Label>
-                  <Input
-                    id="loanAmount"
-                    type="number"
-                    placeholder="10000"
-                    value={loanAmount}
-                    onChange={(e) => setLoanAmount(e.target.value)}
-                    max={maxLoanAmount}
-                  />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Maximum: ${maxLoanAmount.toLocaleString()}
-                  </p>
+                  <div className="relative">
+                    <Input
+                      id="loanAmount"
+                      type="number"
+                      placeholder="10000"
+                      value={loanAmount}
+                      onChange={(e) => handleLoanAmountChange(e.target.value)}
+                      className={validationError ? 'border-red-500 focus:border-red-500' : ''}
+                    />
+                    {validationError && (
+                      <div className="absolute right-2 top-2">
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                      </div>
+                    )}
+                  </div>
+                  {validationError ? (
+                    <p className="text-sm text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {validationError}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Maximum: ${maxLoanAmount.toLocaleString()}
+                    </p>
+                  )}
                 </div>
                 <Button 
                   className="w-full btn-primary"
                   onClick={handleRequestLoan}
-                  disabled={!loanAmount || parseFloat(loanAmount) <= 0}
+                  disabled={!isLoanAmountValid}
                 >
                   Request Loan
                 </Button>
@@ -305,4 +350,4 @@ const StockPortfolio = ({ brokerage }: StockPortfolioProps) => {
   );
 };
 
-export default StockPortfolio;
+export default StockBorrowing;
