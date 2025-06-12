@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useWallet } from '@/contexts/WalletContext';
-import { Wallet, Shield, TrendingUp, Lock } from 'lucide-react';
+import { Wallet, Shield, TrendingUp, Lock, Info } from 'lucide-react';
 
 interface WalletGuardProps {
   children: ReactNode;
@@ -56,6 +56,14 @@ const WalletGuard = ({
             </div>
             <CardTitle className="text-2xl">{title}</CardTitle>
             <CardDescription className="text-lg">{description}</CardDescription>
+            
+            {/* Demo Message */}
+            <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200 mt-4">
+              <Info className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <p className="text-sm text-blue-700">
+                This is just a demo - click connect and explore the app! No real wallet needed.
+              </p>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-3">

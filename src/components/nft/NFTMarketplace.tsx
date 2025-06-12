@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,12 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Search, Filter, TrendingUp, Clock, ArrowRight } from 'lucide-react';
 import NFTDetailModal from './NFTDetailModal';
+import NFTMarketplaceFeed from './NFTMarketplaceFeed';
 
 const NFTMarketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('floor-price');
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showFeed, setShowFeed] = useState(false);
 
   const availableLoans = [
     {
@@ -132,6 +133,10 @@ const NFTMarketplace = () => {
     }
   };
 
+  if (showFeed) {
+    return <NFTMarketplaceFeed onBack={() => setShowFeed(false)} />;
+  }
+
   return (
     <div className="space-y-8">
       {/* Header Section */}
@@ -140,7 +145,11 @@ const NFTMarketplace = () => {
           <h2 className="text-2xl font-bold mb-2">NFT Lending Marketplace</h2>
           <p className="text-muted-foreground">Discover lending opportunities across top collections</p>
         </div>
-        <Button variant="outline" className="btn-secondary">
+        <Button 
+          variant="outline" 
+          className="btn-secondary"
+          onClick={() => setShowFeed(true)}
+        >
           View All Collections
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
