@@ -5,29 +5,103 @@ import WalletOverview from '@/components/dashboard/WalletOverview';
 import SupplySection from '@/components/dashboard/SupplySection';
 import BorrowSection from '@/components/dashboard/BorrowSection';
 import TransactionHistory from '@/components/dashboard/TransactionHistory';
+import WalletGuard from '@/components/auth/WalletGuard';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { TrendingUp, DollarSign, PieChart, BarChart3 } from 'lucide-react';
 
 const Dashboard = () => {
+  const previewContent = (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">
+          <span className="gradient-text">Dashboard</span>
+        </h1>
+        <p className="text-muted-foreground">
+          Manage your portfolio and track your DeFi activities
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Net Worth
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-primary">$142,340</p>
+            <p className="text-sm text-muted-foreground">+$2,850 (2.04%)</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Portfolio</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">$89,200</p>
+            <p className="text-sm text-green-500">+5.2%</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Active Loans</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">$35,600</p>
+            <p className="text-sm text-orange-500">3 positions</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Yield Earned</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-green-600">$8,420</p>
+            <p className="text-sm text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            <span className="gradient-text">Dashboard</span>
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your portfolio and track your DeFi activities
-          </p>
-        </div>
+        <WalletGuard 
+          title="Connect Wallet to View Dashboard"
+          description="Access your complete portfolio overview and manage all your DeFi positions in one place."
+          features={[
+            "View complete portfolio analytics",
+            "Track all lending and borrowing positions", 
+            "Monitor real-time yields and returns",
+            "Access transaction history and reports"
+          ]}
+          showPreview={true}
+          previewContent={previewContent}
+        >
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">
+              <span className="gradient-text">Dashboard</span>
+            </h1>
+            <p className="text-muted-foreground">
+              Manage your portfolio and track your DeFi activities
+            </p>
+          </div>
 
-        <WalletOverview />
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <SupplySection />
-          <BorrowSection />
-        </div>
+          <WalletOverview />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <SupplySection />
+            <BorrowSection />
+          </div>
 
-        <TransactionHistory />
+          <TransactionHistory />
+        </WalletGuard>
       </main>
       <Footer />
     </div>

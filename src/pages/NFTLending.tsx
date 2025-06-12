@@ -4,8 +4,15 @@ import Footer from '@/components/Footer';
 import NFTPortfolio from '@/components/nft/NFTPortfolio';
 import NFTMarketplace from '@/components/nft/NFTMarketplace';
 import CollectionStats from '@/components/nft/CollectionStats';
+import WalletGuard from '@/components/auth/WalletGuard';
 
 const NFTLending = () => {
+  const previewContent = (
+    <div className="container mx-auto px-4 py-8">
+      <CollectionStats />
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -19,9 +26,22 @@ const NFTLending = () => {
           </p>
         </div>
 
-        <CollectionStats />
-        <NFTPortfolio />
-        <NFTMarketplace />
+        <WalletGuard 
+          title="Connect Wallet for NFT Lending"
+          description="Access your NFT portfolio and unlock liquidity from your collection without selling."
+          features={[
+            "View your complete NFT portfolio",
+            "Borrow against blue-chip NFTs",
+            "Access instant liquidity without selling",
+            "Competitive loan terms and rates"
+          ]}
+          showPreview={true}
+          previewContent={previewContent}
+        >
+          <CollectionStats />
+          <NFTPortfolio />
+          <NFTMarketplace />
+        </WalletGuard>
       </main>
       <Footer />
     </div>

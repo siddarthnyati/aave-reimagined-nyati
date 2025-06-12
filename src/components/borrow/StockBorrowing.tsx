@@ -83,6 +83,15 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
       return;
     }
 
+    if (parseFloat(loanAmount) > maxLoanAmount) {
+      toast({
+        title: "Amount Exceeds Maximum",
+        description: `Maximum loan amount is $${maxLoanAmount.toLocaleString()}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     toast({
       title: "Loan Request Submitted",
       description: `Your loan request for $${parseFloat(loanAmount).toLocaleString()} has been submitted for approval.`,
@@ -101,7 +110,7 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
     }
   };
 
-  const isLoanAmountValid = !validationError && loanAmount && parseFloat(loanAmount) > 0;
+  const isLoanAmountValid = !validationError && loanAmount && parseFloat(loanAmount) > 0 && parseFloat(loanAmount) <= maxLoanAmount;
   const allSelected = stocks.every(stock => stock.selected);
 
   return (
@@ -222,7 +231,7 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
               {stocks.map((stock) => (
                 <TableRow 
                   key={stock.symbol} 
-                  className={stock.selected ? 'bg-blue-50 border-blue-200' : 'hover:bg-muted/50'}
+                  className={stock.selected ? 'bg-primary/10 border-primary/20 hover:bg-primary/15' : 'hover:bg-muted/50'}
                 >
                   <TableCell>
                     <Checkbox
@@ -291,6 +300,7 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
                       value={loanAmount}
                       onChange={(e) => handleLoanAmountChange(e.target.value)}
                       className={validationError ? 'border-red-500 focus:border-red-500' : ''}
+                      max={maxLoanAmount}
                     />
                     {validationError && (
                       <div className="absolute right-2 top-2">

@@ -5,8 +5,56 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import CryptoLending from '@/components/borrow/CryptoLending';
 import StockLoans from '@/components/borrow/StockLoans';
+import WalletGuard from '@/components/auth/WalletGuard';
+import { DollarSign, TrendingUp, Shield, Users } from 'lucide-react';
 
 const BorrowLend = () => {
+  const previewContent = (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Total Supplied</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-primary">$142.3M</p>
+            <p className="text-sm text-green-500">+5.2% this month</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Total Borrowed</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">$89.2M</p>
+            <p className="text-sm text-blue-500">Active loans</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Avg. APY</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-green-600">5.8%</p>
+            <p className="text-sm text-muted-foreground">Lending rate</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Active Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-purple-600">12.4K</p>
+            <p className="text-sm text-muted-foreground">Borrowers & Lenders</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -25,21 +73,34 @@ const BorrowLend = () => {
           </p>
         </section>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="crypto" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="crypto">Crypto Lending</TabsTrigger>
-            <TabsTrigger value="stocks">Stock Loans</TabsTrigger>
-          </TabsList>
+        <WalletGuard 
+          title="Connect Wallet for Lending & Borrowing"
+          description="Access comprehensive lending and borrowing features for both crypto and traditional assets."
+          features={[
+            "Borrow against crypto and stock portfolios",
+            "Lend assets to earn competitive yields",
+            "Access flash loans for arbitrage opportunities",
+            "Manage all positions in one dashboard"
+          ]}
+          showPreview={true}
+          previewContent={previewContent}
+        >
+          {/* Main Content Tabs */}
+          <Tabs defaultValue="crypto" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="crypto">Crypto Lending</TabsTrigger>
+              <TabsTrigger value="stocks">Stock Loans</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="crypto">
-            <CryptoLending />
-          </TabsContent>
+            <TabsContent value="crypto">
+              <CryptoLending />
+            </TabsContent>
 
-          <TabsContent value="stocks">
-            <StockLoans />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="stocks">
+              <StockLoans />
+            </TabsContent>
+          </Tabs>
+        </WalletGuard>
       </div>
     </div>
   );

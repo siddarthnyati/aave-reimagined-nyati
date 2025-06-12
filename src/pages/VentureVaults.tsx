@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { TrendingUp, Shield, DollarSign, ArrowRight, CheckCircle, Info } from 'lucide-react';
 import Header from '@/components/Header';
 import CommunityVaults from '@/components/venture/CommunityVaults';
+import WalletGuard from '@/components/auth/WalletGuard';
 
 interface VentureVault {
   id: string;
@@ -118,6 +118,38 @@ const VentureVaults = () => {
     }
   };
 
+  const previewContent = (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {vaults.map((vault) => (
+          <Card key={vault.id} className="glass-card hover-lift">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-xl">{vault.name}</CardTitle>
+                <Badge className={`${getRiskColor(vault.riskLevel)} border-0`}>
+                  {vault.riskLevel} Risk
+                </Badge>
+              </div>
+              <CardDescription>{vault.description}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Target Yield</span>
+                  <span className="font-semibold text-primary">{vault.targetYield}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Current APY</span>
+                  <span className="font-semibold">{vault.currentAPY}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -136,231 +168,244 @@ const VentureVaults = () => {
           </p>
         </section>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="pre-vetted" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="pre-vetted">Pre-Vetted Vaults</TabsTrigger>
-            <TabsTrigger value="community">Community Selection</TabsTrigger>
-          </TabsList>
+        <WalletGuard 
+          title="Connect Wallet for Venture Vaults"
+          description="Participate in our venture vaults to earn yield while supporting innovative Web3 projects."
+          features={[
+            "Access pre-vetted venture vault strategies",
+            "Earn competitive yields on your deposits",
+            "Support early-stage Web3 projects",
+            "Participate in community vault selection"
+          ]}
+          showPreview={true}
+          previewContent={previewContent}
+        >
+          {/* Main Content Tabs */}
+          <Tabs defaultValue="pre-vetted" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="pre-vetted">Pre-Vetted Vaults</TabsTrigger>
+              <TabsTrigger value="community">Community Selection</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="pre-vetted" className="space-y-12">
-            {/* Vault Selector */}
-            <section>
-              <h2 className="text-3xl font-bold text-center mb-8">Choose Your Venture Vault</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {vaults.map((vault) => (
-                  <Card key={vault.id} className="glass-card hover-lift">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-xl">{vault.name}</CardTitle>
-                        <Badge 
-                          className={`${getRiskColor(vault.riskLevel)} border-0`}
-                        >
-                          {vault.riskLevel} Risk
-                        </Badge>
-                      </div>
-                      <CardDescription>{vault.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Target Yield</span>
-                          <span className="font-semibold text-primary">{vault.targetYield}</span>
+            <TabsContent value="pre-vetted" className="space-y-12">
+              {/* Vault Selector */}
+              <section>
+                <h2 className="text-3xl font-bold text-center mb-8">Choose Your Venture Vault</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {vaults.map((vault) => (
+                    <Card key={vault.id} className="glass-card hover-lift">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-xl">{vault.name}</CardTitle>
+                          <Badge 
+                            className={`${getRiskColor(vault.riskLevel)} border-0`}
+                          >
+                            {vault.riskLevel} Risk
+                          </Badge>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Current APY</span>
-                          <span className="font-semibold">{vault.currentAPY}</span>
+                        <CardDescription>{vault.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Target Yield</span>
+                            <span className="font-semibold text-primary">{vault.targetYield}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Current APY</span>
+                            <span className="font-semibold">{vault.currentAPY}</span>
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            <strong>Split:</strong> {vault.split}
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          <strong>Split:</strong> {vault.split}
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-between items-center pt-2">
-                        <Badge variant={vault.status === 'Open' ? 'default' : 'secondary'}>
-                          {vault.status}
-                        </Badge>
-                        <div className="space-x-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                <Info className="w-4 h-4 mr-1" />
-                                Learn More
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>{vault.name}</DialogTitle>
-                                <DialogDescription>{vault.description}</DialogDescription>
-                              </DialogHeader>
-                              <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div>
-                                    <Label>Target Yield</Label>
-                                    <p className="font-semibold text-primary">{vault.targetYield}</p>
-                                  </div>
-                                  <div>
-                                    <Label>Risk Level</Label>
-                                    <p className="font-semibold">{vault.riskLevel}</p>
-                                  </div>
-                                </div>
-                                <div>
-                                  <Label>Allocation Strategy</Label>
-                                  <p>{vault.split}</p>
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-
-                          {vault.status === 'Open' && (
+                        
+                        <div className="flex justify-between items-center pt-2">
+                          <Badge variant={vault.status === 'Open' ? 'default' : 'secondary'}>
+                            {vault.status}
+                          </Badge>
+                          <div className="space-x-2">
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button 
-                                  className="btn-primary" 
-                                  size="sm"
-                                  onClick={() => setSelectedVault(vault)}
-                                >
-                                  Deposit
+                                <Button variant="outline" size="sm">
+                                  <Info className="w-4 h-4 mr-1" />
+                                  Learn More
                                 </Button>
                               </DialogTrigger>
                               <DialogContent>
                                 <DialogHeader>
-                                  <DialogTitle>Deposit to {vault.name}</DialogTitle>
-                                  <DialogDescription>
-                                    Enter the amount you'd like to deposit
-                                  </DialogDescription>
+                                  <DialogTitle>{vault.name}</DialogTitle>
+                                  <DialogDescription>{vault.description}</DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="amount">Amount (USD)</Label>
-                                    <Input
-                                      id="amount"
-                                      type="number"
-                                      placeholder="1000"
-                                      value={depositAmount}
-                                      onChange={(e) => setDepositAmount(e.target.value)}
-                                    />
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <Label>Target Yield</Label>
+                                      <p className="font-semibold text-primary">{vault.targetYield}</p>
+                                    </div>
+                                    <div>
+                                      <Label>Risk Level</Label>
+                                      <p className="font-semibold">{vault.riskLevel}</p>
+                                    </div>
                                   </div>
-                                  <Button 
-                                    className="w-full btn-primary"
-                                    onClick={() => handleDeposit(vault)}
-                                  >
-                                    Confirm Deposit
-                                  </Button>
+                                  <div>
+                                    <Label>Allocation Strategy</Label>
+                                    <p>{vault.split}</p>
+                                  </div>
                                 </div>
                               </DialogContent>
                             </Dialog>
-                          )}
+
+                            {vault.status === 'Open' && (
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button 
+                                    className="btn-primary" 
+                                    size="sm"
+                                    onClick={() => setSelectedVault(vault)}
+                                  >
+                                    Deposit
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Deposit to {vault.name}</DialogTitle>
+                                    <DialogDescription>
+                                      Enter the amount you'd like to deposit
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <Label htmlFor="amount">Amount (USD)</Label>
+                                      <Input
+                                        id="amount"
+                                        type="number"
+                                        placeholder="1000"
+                                        value={depositAmount}
+                                        onChange={(e) => setDepositAmount(e.target.value)}
+                                      />
+                                    </div>
+                                    <Button 
+                                      className="w-full btn-primary"
+                                      onClick={() => handleDeposit(vault)}
+                                    >
+                                      Confirm Deposit
+                                    </Button>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </section>
 
-            {/* How It Works */}
-            <section className="py-16">
-              <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                    <DollarSign className="w-8 h-8 text-primary" />
+              {/* How It Works */}
+              <section className="py-16">
+                <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                      <DollarSign className="w-8 h-8 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-semibold">1. Supply Assets</h3>
+                      <p className="text-muted-foreground">
+                        Supply USDC, DAI, or GHO into your chosen Venture Vault.
+                      </p>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">1. Supply Assets</h3>
-                    <p className="text-muted-foreground">
-                      Supply USDC, DAI, or GHO into your chosen Venture Vault.
-                    </p>
+                  
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-8 h-8 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-semibold">2. Strategic Allocation</h3>
+                      <p className="text-muted-foreground">
+                        Aave Vault strategy: part goes to base yield, part to curated projects.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-8 h-8 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-semibold">3. Earn & Withdraw</h3>
+                      <p className="text-muted-foreground">
+                        Earn yield + token upside — withdraw anytime (lockups vary per vault).
+                      </p>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                    <TrendingUp className="w-8 h-8 text-primary" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">2. Strategic Allocation</h3>
-                    <p className="text-muted-foreground">
-                      Aave Vault strategy: part goes to base yield, part to curated projects.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-8 h-8 text-primary" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">3. Earn & Withdraw</h3>
-                    <p className="text-muted-foreground">
-                      Earn yield + token upside — withdraw anytime (lockups vary per vault).
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Active Positions */}
-            <section className="py-12">
-              <h2 className="text-3xl font-bold mb-8">Your Venture Vault Positions</h2>
-              <Card className="glass-card">
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Vault Name</TableHead>
-                        <TableHead>Amount Supplied</TableHead>
-                        <TableHead>Current Yield</TableHead>
-                        <TableHead>Project Exposure</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {userPositions.map((position, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{position.vaultName}</TableCell>
-                          <TableCell>{position.amountSupplied}</TableCell>
-                          <TableCell className="text-primary">{position.currentYield}</TableCell>
-                          <TableCell className="text-sm">{position.projectExposure}</TableCell>
-                          <TableCell>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleWithdraw(position.vaultName)}
-                            >
-                              Withdraw
-                            </Button>
-                          </TableCell>
+              {/* Active Positions */}
+              <section className="py-12">
+                <h2 className="text-3xl font-bold mb-8">Your Venture Vault Positions</h2>
+                <Card className="glass-card">
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Vault Name</TableHead>
+                          <TableHead>Amount Supplied</TableHead>
+                          <TableHead>Current Yield</TableHead>
+                          <TableHead>Project Exposure</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </section>
-          </TabsContent>
+                      </TableHeader>
+                      <TableBody>
+                        {userPositions.map((position, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">{position.vaultName}</TableCell>
+                            <TableCell>{position.amountSupplied}</TableCell>
+                            <TableCell className="text-primary">{position.currentYield}</TableCell>
+                            <TableCell className="text-sm">{position.projectExposure}</TableCell>
+                            <TableCell>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleWithdraw(position.vaultName)}
+                              >
+                                Withdraw
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </section>
+            </TabsContent>
 
-          <TabsContent value="community">
-            <CommunityVaults />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="community">
+              <CommunityVaults />
+            </TabsContent>
+          </Tabs>
 
-        {/* Footer CTA */}
-        <section className="py-16 text-center">
-          <div className="glass-card p-12 max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4">
-              Discover more opportunities — powered by Aave
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Explore our full range of Venture Vault strategies and find the perfect fit for your investment goals.
-            </p>
-            <Button className="btn-primary" size="lg">
-              Explore Venture Vault Strategies
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
-        </section>
+          {/* Footer CTA */}
+          <section className="py-16 text-center">
+            <div className="glass-card p-12 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold mb-4">
+                Discover more opportunities — powered by Aave
+              </h2>
+              <p className="text-muted-foreground mb-8">
+                Explore our full range of Venture Vault strategies and find the perfect fit for your investment goals.
+              </p>
+              <Button className="btn-primary" size="lg">
+                Explore Venture Vault Strategies
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </section>
+        </WalletGuard>
       </div>
     </div>
   );
