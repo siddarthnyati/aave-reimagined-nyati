@@ -9,7 +9,7 @@ import { WalletProvider } from "@/contexts/WalletContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Markets from "./pages/Markets";
-import Governance from "./pages/Governance";
+import CreditCard from "./pages/CreditCard";
 import Staking from "./pages/Staking";
 import NFTLending from "./pages/NFTLending";
 import VentureVaults from "./pages/VentureVaults";
@@ -29,7 +29,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/markets" element={<Markets />} />
-            <Route path="/governance" element={<Governance />} />
+            <Route path="/credit-card" element={<CreditCard />} />
             <Route path="/staking" element={<Staking />} />
             <Route path="/nft-lending" element={<NFTLending />} />
             <Route path="/venture-vaults" element={<VentureVaults />} />

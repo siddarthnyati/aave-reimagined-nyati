@@ -5,8 +5,11 @@ import WalletOverview from '@/components/dashboard/WalletOverview';
 import SupplySection from '@/components/dashboard/SupplySection';
 import BorrowSection from '@/components/dashboard/BorrowSection';
 import TransactionHistory from '@/components/dashboard/TransactionHistory';
+import GovernanceSection from '@/components/dashboard/GovernanceSection';
+import RewardsSection from '@/components/dashboard/RewardsSection';
 import WalletGuard from '@/components/auth/WalletGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, DollarSign, PieChart, BarChart3 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -93,14 +96,39 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <WalletOverview />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <SupplySection />
-            <BorrowSection />
-          </div>
+          <Tabs defaultValue="overview" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+              <TabsTrigger value="governance">Governance</TabsTrigger>
+              <TabsTrigger value="rewards">Rewards</TabsTrigger>
+            </TabsList>
 
-          <TransactionHistory />
+            <TabsContent value="overview" className="space-y-8">
+              <WalletOverview />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <SupplySection />
+                <BorrowSection />
+              </div>
+              <TransactionHistory />
+            </TabsContent>
+
+            <TabsContent value="portfolio" className="space-y-8">
+              <WalletOverview />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <SupplySection />
+                <BorrowSection />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="governance" className="space-y-8">
+              <GovernanceSection />
+            </TabsContent>
+
+            <TabsContent value="rewards" className="space-y-8">
+              <RewardsSection />
+            </TabsContent>
+          </Tabs>
         </WalletGuard>
       </main>
       <Footer />

@@ -58,6 +58,9 @@ const Header = () => {
               <Link to="/borrow-lend" className="text-muted-foreground hover:text-primary transition-colors">
                 Borrow/Lend
               </Link>
+              <Link to="/credit-card" className="text-muted-foreground hover:text-primary transition-colors">
+                Credit Card
+              </Link>
               <Link to="/staking" className="text-muted-foreground hover:text-primary transition-colors">
                 Staking
               </Link>
@@ -66,9 +69,6 @@ const Header = () => {
               </Link>
               <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
                 NFT Lending
-              </Link>
-              <Link to="/governance" className="text-muted-foreground hover:text-primary transition-colors">
-                Governance
               </Link>
             </nav>
 
@@ -134,6 +134,9 @@ const Header = () => {
                 <Link to="/borrow-lend" className="text-muted-foreground hover:text-primary transition-colors">
                   Borrow/Lend
                 </Link>
+                <Link to="/credit-card" className="text-muted-foreground hover:text-primary transition-colors">
+                  Credit Card
+                </Link>
                 <Link to="/staking" className="text-muted-foreground hover:text-primary transition-colors">
                   Staking
                 </Link>
@@ -142,9 +145,6 @@ const Header = () => {
                 </Link>
                 <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
                   NFT Lending
-                </Link>
-                <Link to="/governance" className="text-muted-foreground hover:text-primary transition-colors">
-                  Governance
                 </Link>
                 {isConnected ? (
                   <div className="space-y-2">
