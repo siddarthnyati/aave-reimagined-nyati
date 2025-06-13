@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { TrendingUp, TrendingDown, DollarSign, PieChart, AlertTriangle, Target, Unlink, CheckCircle2, AlertCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, PieChart, AlertTriangle, Target, Unlink, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 
 interface Stock {
   symbol: string;
@@ -22,18 +22,22 @@ interface Stock {
   maxLoan: number;
   sector: string;
   selected: boolean;
+  isWrapped?: boolean;
 }
 
 interface StockBorrowingProps {
   brokerage: string;
+  category: 'traditional' | 'crypto';
   onDisconnect: () => void;
 }
 
-const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
+const StockBorrowing = ({ brokerage, category, onDisconnect }: StockBorrowingProps) => {
   const { toast } = useToast();
   const [loanAmount, setLoanAmount] = useState('');
   const [validationError, setValidationError] = useState('');
-  const [stocks, setStocks] = useState<Stock[]>([
+
+  // Different stock portfolios based on category
+  const traditionalStocks: Stock[] = [
     { symbol: 'AAPL', name: 'Apple Inc.', shares: 50, price: 182.52, dayChange: 2.14, marketValue: 9126, riskRating: 'A+', ltv: 70, maxLoan: 6388, sector: 'Technology', selected: false },
     { symbol: 'MSFT', name: 'Microsoft Corp.', shares: 30, price: 378.85, dayChange: -1.23, marketValue: 11366, riskRating: 'A+', ltv: 70, maxLoan: 7956, sector: 'Technology', selected: false },
     { symbol: 'GOOGL', name: 'Alphabet Inc.', shares: 25, price: 138.21, dayChange: 0.89, marketValue: 3455, riskRating: 'A', ltv: 65, maxLoan: 2246, sector: 'Technology', selected: false },
@@ -42,7 +46,20 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
     { symbol: 'QQQ', name: 'Invesco QQQ ETF', shares: 40, price: 385.67, dayChange: 0.73, marketValue: 15427, riskRating: 'A+', ltv: 75, maxLoan: 11570, sector: 'ETF', selected: false },
     { symbol: 'NVDA', name: 'NVIDIA Corp.', shares: 20, price: 875.23, dayChange: 5.12, marketValue: 17505, riskRating: 'A-', ltv: 60, maxLoan: 10503, sector: 'Technology', selected: false },
     { symbol: 'AMZN', name: 'Amazon.com Inc.', shares: 12, price: 142.81, dayChange: -0.95, marketValue: 1714, riskRating: 'A', ltv: 65, maxLoan: 1114, sector: 'Consumer Cyclical', selected: false }
-  ]);
+  ];
+
+  const wrappedStocks: Stock[] = [
+    { symbol: 'WAAPL', name: 'Wrapped Apple Inc.', shares: 75, price: 182.52, dayChange: 2.14, marketValue: 13689, riskRating: 'A', ltv: 60, maxLoan: 8213, sector: 'Technology', selected: false, isWrapped: true },
+    { symbol: 'WMSFT', name: 'Wrapped Microsoft Corp.', shares: 45, price: 378.85, dayChange: -1.23, marketValue: 17048, riskRating: 'A', ltv: 60, maxLoan: 10229, sector: 'Technology', selected: false, isWrapped: true },
+    { symbol: 'WGOOGL', name: 'Wrapped Alphabet Inc.', shares: 35, price: 138.21, dayChange: 0.89, marketValue: 4837, riskRating: 'A-', ltv: 55, maxLoan: 2660, sector: 'Technology', selected: false, isWrapped: true },
+    { symbol: 'WTSLA', name: 'Wrapped Tesla Inc.', shares: 25, price: 248.42, dayChange: -4.67, marketValue: 6210, riskRating: 'B+', ltv: 45, maxLoan: 2795, sector: 'Consumer Cyclical', selected: false, isWrapped: true },
+    { symbol: 'WNVDA', name: 'Wrapped NVIDIA Corp.', shares: 10, price: 875.23, dayChange: 5.12, marketValue: 8752, riskRating: 'A-', ltv: 55, maxLoan: 4814, sector: 'Technology', selected: false, isWrapped: true },
+    { symbol: 'WAMZN', name: 'Wrapped Amazon.com Inc.', shares: 20, price: 142.81, dayChange: -0.95, marketValue: 2856, riskRating: 'A', ltv: 55, maxLoan: 1571, sector: 'Consumer Cyclical', selected: false, isWrapped: true },
+    { symbol: 'WSPY', name: 'Wrapped SPDR S&P 500', shares: 60, price: 445.32, dayChange: 1.05, marketValue: 26719, riskRating: 'A', ltv: 65, maxLoan: 17367, sector: 'ETF', selected: false, isWrapped: true },
+    { symbol: 'WQQQ', name: 'Wrapped Invesco QQQ', shares: 30, price: 385.67, dayChange: 0.73, marketValue: 11570, riskRating: 'A', ltv: 65, maxLoan: 7521, sector: 'ETF', selected: false, isWrapped: true }
+  ];
+
+  const [stocks, setStocks] = useState<Stock[]>(category === 'traditional' ? traditionalStocks : wrappedStocks);
 
   const totalPortfolioValue = stocks.reduce((sum, stock) => sum + stock.marketValue, 0);
   const selectedValue = stocks.filter(s => s.selected).reduce((sum, stock) => sum + stock.marketValue, 0);
@@ -115,6 +132,24 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
 
   return (
     <div className="space-y-8">
+      {/* Category Info Card */}
+      {category === 'crypto' && (
+        <Card className="glass-card">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <Info className="w-6 h-6 text-blue-500" />
+              <div>
+                <h3 className="font-semibold">Crypto Wrapped Stocks</h3>
+                <p className="text-sm text-muted-foreground">
+                  These are tokenized versions of traditional stocks that trade 24/7 on crypto platforms. 
+                  Lower LTV ratios apply due to additional bridging risks.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Portfolio Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="glass-card">
@@ -155,13 +190,13 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
             <CardTitle className="text-lg">Interest Rate</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-blue-600">4.8%</p>
+            <p className="text-2xl font-bold text-blue-600">{category === 'traditional' ? '4.8%' : '6.2%'}</p>
             <p className="text-sm text-muted-foreground">APR</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Connected Brokerage Info */}
+      {/* Connected Platform Info */}
       <Card className="glass-card">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
@@ -171,7 +206,9 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
               </div>
               <div>
                 <p className="font-semibold">Connected to {brokerage}</p>
-                <p className="text-sm text-muted-foreground">Last sync: Just now</p>
+                <p className="text-sm text-muted-foreground">
+                  {category === 'traditional' ? 'Traditional Brokerage' : 'Crypto Platform'} • Last sync: Just now
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -198,9 +235,11 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Your Stock Portfolio</CardTitle>
+              <CardTitle>
+                Your {category === 'traditional' ? 'Stock' : 'Wrapped Stock'} Portfolio
+              </CardTitle>
               <CardDescription>
-                Select stocks to use as collateral for your loan
+                Select {category === 'traditional' ? 'stocks' : 'wrapped tokens'} to use as collateral for your loan
               </CardDescription>
             </div>
             <Button 
@@ -217,7 +256,7 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">Select</TableHead>
-                <TableHead>Stock</TableHead>
+                <TableHead>{category === 'traditional' ? 'Stock' : 'Token'}</TableHead>
                 <TableHead>Shares</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Day Change</TableHead>
@@ -241,11 +280,18 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">
+                      <div className={`w-8 h-8 bg-gradient-to-r ${stock.isWrapped ? 'from-purple-400 to-purple-600' : 'from-blue-400 to-blue-600'} rounded flex items-center justify-center text-white text-xs font-bold`}>
                         {stock.symbol[0]}
                       </div>
                       <div>
-                        <p className="font-medium">{stock.symbol}</p>
+                        <div className="flex items-center gap-1">
+                          <p className="font-medium">{stock.symbol}</p>
+                          {stock.isWrapped && (
+                            <Badge variant="outline" className="text-xs">
+                              Wrapped
+                            </Badge>
+                          )}
+                        </div>
                         <p className="text-sm text-muted-foreground">{stock.name}</p>
                       </div>
                     </div>
@@ -284,7 +330,7 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
               Request Loan
             </CardTitle>
             <CardDescription>
-              Borrow against your selected stock collateral
+              Borrow against your selected {category === 'traditional' ? 'stock' : 'wrapped token'} collateral
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -332,7 +378,7 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Interest Rate:</span>
-                    <span className="font-medium">4.8% APR</span>
+                    <span className="font-medium">{category === 'traditional' ? '4.8%' : '6.2%'} APR</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Collateral Value:</span>
@@ -347,9 +393,15 @@ const StockBorrowing = ({ brokerage, onDisconnect }: StockBorrowingProps) => {
                   <div className="flex justify-between">
                     <span>Monthly Payment:</span>
                     <span className="font-medium">
-                      ${loanAmount ? ((parseFloat(loanAmount) * 0.048) / 12).toFixed(0) : 0}
+                      ${loanAmount ? ((parseFloat(loanAmount) * (category === 'traditional' ? 0.048 : 0.062)) / 12).toFixed(0) : 0}
                     </span>
                   </div>
+                  {category === 'crypto' && (
+                    <div className="flex justify-between">
+                      <span>Settlement:</span>
+                      <span className="font-medium text-green-600">Instant</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
