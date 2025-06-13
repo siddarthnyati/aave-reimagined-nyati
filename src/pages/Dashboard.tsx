@@ -7,6 +7,7 @@ import BorrowSection from '@/components/dashboard/BorrowSection';
 import TransactionHistory from '@/components/dashboard/TransactionHistory';
 import GovernanceSection from '@/components/dashboard/GovernanceSection';
 import RewardsSection from '@/components/dashboard/RewardsSection';
+import PortfolioAnalytics from '@/components/dashboard/PortfolioAnalytics';
 import WalletGuard from '@/components/auth/WalletGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -97,8 +98,9 @@ const Dashboard = () => {
           </div>
 
           <Tabs defaultValue="overview" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
               <TabsTrigger value="governance">Governance</TabsTrigger>
               <TabsTrigger value="rewards">Rewards</TabsTrigger>
@@ -111,6 +113,10 @@ const Dashboard = () => {
                 <BorrowSection />
               </div>
               <TransactionHistory />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-8">
+              <PortfolioAnalytics />
             </TabsContent>
 
             <TabsContent value="portfolio" className="space-y-8">
