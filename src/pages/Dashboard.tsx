@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WalletOverview from '@/components/dashboard/WalletOverview';
@@ -11,7 +12,7 @@ import WalletGuard from '@/components/auth/WalletGuard';
 import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, DollarSign, PieChart, BarChart3 } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, BarChart3, Shield } from 'lucide-react';
 import { getUserTrustGraphData } from '@/lib/trustgraph';
 import { useSearchParams } from 'react-router-dom';
 
