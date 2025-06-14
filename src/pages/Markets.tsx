@@ -5,6 +5,9 @@ import Footer from '@/components/Footer';
 import MarketTable from '@/components/markets/MarketTable';
 import MarketFilters from '@/components/markets/MarketFilters';
 import MarketStats from '@/components/markets/MarketStats';
+import MarketAnalyticsDashboard from '@/components/markets/MarketAnalyticsDashboard';
+import FlashNews from '@/components/markets/FlashNews';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Markets = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -23,16 +26,37 @@ const Markets = () => {
           </p>
         </div>
 
-        <MarketStats />
-        <MarketFilters 
-          onFilterChange={setActiveCategory}
-          onSearchChange={setSearchTerm}
-          activeCategory={activeCategory}
-        />
-        <MarketTable 
-          activeCategory={activeCategory}
-          searchTerm={searchTerm}
-        />
+        <Tabs defaultValue="overview" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Market Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics Dashboard</TabsTrigger>
+            <TabsTrigger value="news">Flash News</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-8">
+            <MarketStats />
+            <MarketFilters 
+              onFilterChange={setActiveCategory}
+              onSearchChange={setSearchTerm}
+              activeCategory={activeCategory}
+            />
+            <MarketTable 
+              activeCategory={activeCategory}
+              searchTerm={searchTerm}
+            />
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-8">
+            <MarketAnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="news" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <FlashNews />
+              <MarketStats />
+            </div>
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </div>

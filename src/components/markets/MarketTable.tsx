@@ -1,9 +1,11 @@
-
 import { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { useWallet } from '@/contexts/WalletContext';
+import WalletModal from '@/components/WalletModal';
+import RiskAssessmentTooltip from './RiskAssessmentTooltip';
 
 interface Asset {
   id: string;
@@ -27,6 +29,8 @@ interface MarketTableProps {
 
 const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
   const [sortBy, setSortBy] = useState('supplyAPY');
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const { isConnected } = useWallet();
 
   const allAssets: Asset[] = [
     // Stablecoins
@@ -74,11 +78,20 @@ const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
     return filtered;
   }, [activeCategory, searchTerm]);
 
+  const handleAction = (action: 'supply' | 'borrow') => {
+    if (!isConnected) {
+      setIsWalletModalOpen(true);
+    } else {
+      // Handle the action for connected users
+      console.log(`${action} action triggered`);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredAssets.map((asset) => (
-          <Card key={asset.id} className="asset-card">
+          <Card key={asset.id} className="asset-card hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -109,27 +122,47 @@ const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
                   </div>
                 </div>
 
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Supply APY</span>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <span className="text-sm text-muted-foreground">Supply APY</span>
+                    <RiskAssessmentTooltip type="supplyAPY" value={asset.supplyAPY} />
+                  </div>
                   <span className="font-semibold text-primary">{asset.supplyAPY}</span>
                 </div>
 
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Borrow APY</span>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <span className="text-sm text-muted-foreground">Borrow APY</span>
+                    <RiskAssessmentTooltip type="borrowAPY" value={asset.borrowAPY} />
+                  </div>
                   <span className="font-semibold">{asset.borrowAPY}</span>
                 </div>
 
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Liquidity</span>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <span className="text-sm text-muted-foreground">Liquidity</span>
+                    <RiskAssessmentTooltip type="liquidity" value={asset.liquidity} />
+                  </div>
                   <span className="font-semibold">{asset.liquidity}</span>
                 </div>
               </div>
 
               <div className="flex space-x-2 mt-4">
-                <Button size="sm" className="btn-primary flex-1">
+                <Button 
+                  size="sm" 
+                  className="btn-primary flex-1"
+                  onClick={() => handleAction('supply')}
+                >
+                  {!isConnected && <Wallet className="w-4 h-4 mr-1" />}
                   Supply
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => handleAction('borrow')}
+                >
+                  {!isConnected && <Wallet className="w-4 h-4 mr-1" />}
                   Borrow
                 </Button>
               </div>
@@ -137,6 +170,11 @@ const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
           </Card>
         ))}
       </div>
+
+      <WalletModal 
+        open={isWalletModalOpen}
+        onOpenChange={setIsWalletModalOpen}
+      />
     </div>
   );
 };
