@@ -24,6 +24,10 @@ const Dashboard = () => {
   // Get tab from URL params, default to 'overview'
   const currentTab = searchParams.get('tab') || 'overview';
 
+  const handleTabChange = (value: string) => {
+    navigate(`/dashboard?tab=${value}`, { replace: true });
+  };
+
   const handleTrustGraphClick = () => {
     navigate('/dashboard?tab=analytics&focus=trustgraph');
   };
@@ -117,7 +121,7 @@ const Dashboard = () => {
             />
           </div>
 
-          <Tabs value={currentTab} className="space-y-8">
+          <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-8">
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>

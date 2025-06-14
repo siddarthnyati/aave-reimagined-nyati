@@ -2,10 +2,11 @@ import { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, CheckCircle } from 'lucide-react';
 import { useWallet } from '@/contexts/WalletContext';
 import WalletModal from '@/components/WalletModal';
 import RiskAssessmentTooltip from './RiskAssessmentTooltip';
+import { useToast } from '@/hooks/use-toast';
 
 interface Asset {
   id: string;
@@ -30,7 +31,9 @@ interface MarketTableProps {
 const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
   const [sortBy, setSortBy] = useState('supplyAPY');
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const { isConnected } = useWallet();
+  const { toast } = useToast();
 
   const allAssets: Asset[] = [
     // Stablecoins
@@ -78,13 +81,43 @@ const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
     return filtered;
   }, [activeCategory, searchTerm]);
 
-  const handleAction = (action: 'supply' | 'borrow') => {
+  const handleAction = async (action: 'supply' | 'borrow', assetSymbol: string) => {
     if (!isConnected) {
       setIsWalletModalOpen(true);
-    } else {
-      // Handle the action for connected users
-      console.log(`${action} action triggered`);
+      return;
     }
+
+    // For connected users, simulate action
+    setLoadingAction(`${action}-${assetSymbol}`);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoadingAction(null);
+      toast({
+        title: `${action === 'supply' ? 'Supply' : 'Borrow'} Successful!`,
+        description: `Successfully initiated ${action} for ${assetSymbol}`,
+      });
+    }, 1500);
+  };
+
+  const getButtonText = (action: 'supply' | 'borrow', assetSymbol: string) => {
+    if (loadingAction === `${action}-${assetSymbol}`) {
+      return 'Processing...';
+    }
+    if (!isConnected) {
+      return `Connect to ${action}`;
+    }
+    return action === 'supply' ? 'Supply' : 'Borrow';
+  };
+
+  const getButtonIcon = (action: 'supply' | 'borrow', assetSymbol: string) => {
+    if (loadingAction === `${action}-${assetSymbol}`) {
+      return null;
+    }
+    if (!isConnected) {
+      return <Wallet className="w-4 h-4 mr-1" />;
+    }
+    return <CheckCircle className="w-4 h-4 mr-1" />;
   };
 
   return (
@@ -150,20 +183,22 @@ const MarketTable = ({ activeCategory, searchTerm }: MarketTableProps) => {
               <div className="flex space-x-2 mt-4">
                 <Button 
                   size="sm" 
-                  className="btn-primary flex-1"
-                  onClick={() => handleAction('supply')}
+                  className={`btn-primary flex-1 ${loadingAction === `supply-${asset.symbol}` ? 'opacity-70' : ''}`}
+                  onClick={() => handleAction('supply', asset.symbol)}
+                  disabled={loadingAction === `supply-${asset.symbol}`}
                 >
-                  {!isConnected && <Wallet className="w-4 h-4 mr-1" />}
-                  Supply
+                  {getButtonIcon('supply', asset.symbol)}
+                  {getButtonText('supply', asset.symbol)}
                 </Button>
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="flex-1"
-                  onClick={() => handleAction('borrow')}
+                  className={`flex-1 ${loadingAction === `borrow-${asset.symbol}` ? 'opacity-70' : ''}`}
+                  onClick={() => handleAction('borrow', asset.symbol)}
+                  disabled={loadingAction === `borrow-${asset.symbol}`}
                 >
-                  {!isConnected && <Wallet className="w-4 h-4 mr-1" />}
-                  Borrow
+                  {getButtonIcon('borrow', asset.symbol)}
+                  {getButtonText('borrow', asset.symbol)}
                 </Button>
               </div>
             </CardContent>
