@@ -8,10 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { TrendingUp, Shield, DollarSign, ArrowRight, CheckCircle, Info } from 'lucide-react';
+import { TrendingUp, Shield, DollarSign, ArrowRight, CheckCircle, Info, Lock } from 'lucide-react';
 import Header from '@/components/Header';
 import CommunityVaults from '@/components/venture/CommunityVaults';
 import WalletGuard from '@/components/auth/WalletGuard';
+import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
+import { getUserTrustGraphData, getVaultEligibility, getTrustGraphGrade } from '@/lib/trustgraph';
 
 interface VentureVault {
   id: string;
@@ -22,6 +24,8 @@ interface VentureVault {
   description: string;
   currentAPY: string;
   riskLevel: 'Low' | 'Medium' | 'High';
+  minTrustGraphScore: number;
+  trustGraphGrade: string;
 }
 
 interface UserPosition {
@@ -35,6 +39,7 @@ const VentureVaults = () => {
   const { toast } = useToast();
   const [depositAmount, setDepositAmount] = useState('');
   const [selectedVault, setSelectedVault] = useState<VentureVault | null>(null);
+  const trustGraphData = getUserTrustGraphData();
 
   const vaults: VentureVault[] = [
     {
@@ -45,7 +50,9 @@ const VentureVaults = () => {
       status: 'Open',
       description: 'Conservative approach combining steady stablecoin yields with minimal exposure to vetted DeFi projects.',
       currentAPY: '5.2%',
-      riskLevel: 'Low'
+      riskLevel: 'Low',
+      minTrustGraphScore: 600,
+      trustGraphGrade: 'B'
     },
     {
       id: 'web3-innovation',
@@ -55,7 +62,9 @@ const VentureVaults = () => {
       status: 'Open',
       description: 'Balanced strategy offering moderate risk exposure to cutting-edge Web3 infrastructure and applications.',
       currentAPY: '10.8%',
-      riskLevel: 'Medium'
+      riskLevel: 'Medium',
+      minTrustGraphScore: 650,
+      trustGraphGrade: 'B+'
     },
     {
       id: 'rwa-income',
@@ -65,7 +74,9 @@ const VentureVaults = () => {
       status: 'Coming Soon',
       description: 'Diversified exposure to real-world assets tokenized on-chain, combining traditional and crypto yields.',
       currentAPY: '7.1%',
-      riskLevel: 'Medium'
+      riskLevel: 'Medium',
+      minTrustGraphScore: 650,
+      trustGraphGrade: 'B+'
     }
   ];
 
@@ -89,6 +100,15 @@ const VentureVaults = () => {
       toast({
         title: "Invalid Amount",
         description: "Please enter a valid deposit amount.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!getVaultEligibility(trustGraphData.score, vault.riskLevel)) {
+      toast({
+        title: "TrustGraph Score Too Low",
+        description: `You need a minimum TrustGraph score of ${vault.minTrustGraphScore} (${vault.trustGraphGrade}) to access this vault.`,
         variant: "destructive"
       });
       return;
@@ -118,6 +138,10 @@ const VentureVaults = () => {
     }
   };
 
+  const isEligible = (vault: VentureVault) => {
+    return getVaultEligibility(trustGraphData.score, vault.riskLevel);
+  };
+
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -126,9 +150,14 @@ const VentureVaults = () => {
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-xl">{vault.name}</CardTitle>
-                <Badge className={`${getRiskColor(vault.riskLevel)} border-0`}>
-                  {vault.riskLevel} Risk
-                </Badge>
+                <div className="space-y-1">
+                  <Badge className={`${getRiskColor(vault.riskLevel)} border-0`}>
+                    {vault.riskLevel} Risk
+                  </Badge>
+                  <Badge variant="outline" className="block text-center">
+                    {vault.trustGraphGrade}+ Required
+                  </Badge>
+                </div>
               </div>
               <CardDescription>{vault.description}</CardDescription>
             </CardHeader>
@@ -180,6 +209,11 @@ const VentureVaults = () => {
           showPreview={true}
           previewContent={previewContent}
         >
+          {/* TrustGraph Score Display */}
+          <div className="mb-8 flex justify-center">
+            <TrustGraphScore score={trustGraphData.score} />
+          </div>
+
           {/* Main Content Tabs */}
           <Tabs defaultValue="pre-vetted" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8">
@@ -197,11 +231,14 @@ const VentureVaults = () => {
                       <CardHeader>
                         <div className="flex justify-between items-start">
                           <CardTitle className="text-xl">{vault.name}</CardTitle>
-                          <Badge 
-                            className={`${getRiskColor(vault.riskLevel)} border-0`}
-                          >
-                            {vault.riskLevel} Risk
-                          </Badge>
+                          <div className="space-y-1">
+                            <Badge className={`${getRiskColor(vault.riskLevel)} border-0`}>
+                              {vault.riskLevel} Risk
+                            </Badge>
+                            <Badge variant="outline" className="block text-center">
+                              {vault.trustGraphGrade}+ Required
+                            </Badge>
+                          </div>
                         </div>
                         <CardDescription>{vault.description}</CardDescription>
                       </CardHeader>
@@ -219,6 +256,20 @@ const VentureVaults = () => {
                             <strong>Split:</strong> {vault.split}
                           </div>
                         </div>
+
+                        {!isEligible(vault) && (
+                          <div className="p-3 bg-orange-50 dark:bg-orange-950/50 rounded-lg border border-orange-200 dark:border-orange-800">
+                            <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300">
+                              <Lock className="w-4 h-4" />
+                              <span className="text-sm font-medium">
+                                Requires TrustGraph {vault.trustGraphGrade}+ ({vault.minTrustGraphScore}+)
+                              </span>
+                            </div>
+                            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                              Your score: {trustGraphData.score} ({trustGraphData.grade})
+                            </p>
+                          </div>
+                        )}
                         
                         <div className="flex justify-between items-center pt-2">
                           <Badge variant={vault.status === 'Open' ? 'default' : 'secondary'}>
@@ -256,7 +307,7 @@ const VentureVaults = () => {
                               </DialogContent>
                             </Dialog>
 
-                            {vault.status === 'Open' && (
+                            {vault.status === 'Open' && isEligible(vault) && (
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button 
@@ -294,6 +345,13 @@ const VentureVaults = () => {
                                   </div>
                                 </DialogContent>
                               </Dialog>
+                            )}
+
+                            {vault.status === 'Open' && !isEligible(vault) && (
+                              <Button className="btn-primary" size="sm" disabled>
+                                <Lock className="w-4 h-4 mr-1" />
+                                Locked
+                              </Button>
                             )}
                           </div>
                         </div>

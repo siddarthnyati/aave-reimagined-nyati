@@ -9,11 +9,15 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection';
 import RewardsSection from '@/components/dashboard/RewardsSection';
 import PortfolioAnalytics from '@/components/dashboard/PortfolioAnalytics';
 import WalletGuard from '@/components/auth/WalletGuard';
+import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, DollarSign, PieChart, BarChart3 } from 'lucide-react';
+import { getUserTrustGraphData } from '@/lib/trustgraph';
 
 const Dashboard = () => {
+  const trustGraphData = getUserTrustGraphData();
+
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -61,11 +65,11 @@ const Dashboard = () => {
 
         <Card className="glass-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Yield Earned</CardTitle>
+            <CardTitle className="text-lg">TrustGraph Score</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">$8,420</p>
-            <p className="text-sm text-muted-foreground">This month</p>
+            <p className="text-2xl font-bold text-green-600">{trustGraphData.score}</p>
+            <p className="text-sm text-muted-foreground">{trustGraphData.grade} - {trustGraphData.tier}</p>
           </CardContent>
         </Card>
       </div>
@@ -88,13 +92,16 @@ const Dashboard = () => {
           showPreview={true}
           previewContent={previewContent}
         >
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">
-              <span className="gradient-text">Dashboard</span>
-            </h1>
-            <p className="text-muted-foreground">
-              Manage your portfolio and track your DeFi activities
-            </p>
+          <div className="mb-8 flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">
+                <span className="gradient-text">Dashboard</span>
+              </h1>
+              <p className="text-muted-foreground">
+                Manage your portfolio and track your DeFi activities
+              </p>
+            </div>
+            <TrustGraphScore score={trustGraphData.score} />
           </div>
 
           <Tabs defaultValue="overview" className="space-y-8">

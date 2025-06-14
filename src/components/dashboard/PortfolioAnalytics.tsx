@@ -1,11 +1,14 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Percent, Target, Award, AlertTriangle, BarChart3 } from 'lucide-react';
+import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
+import { getUserTrustGraphData } from '@/lib/trustgraph';
 
 const PortfolioAnalytics = () => {
+  const trustGraphData = getUserTrustGraphData();
+
   // Portfolio performance data
   const performanceData = [
     { date: '2024-01', value: 100000, pnl: 0 },
@@ -118,11 +121,12 @@ const PortfolioAnalytics = () => {
       </div>
 
       <Tabs defaultValue="performance" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="allocation">Allocation</TabsTrigger>
           <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
           <TabsTrigger value="yield">Yield Tracking</TabsTrigger>
+          <TabsTrigger value="trustgraph">TrustGraph</TabsTrigger>
         </TabsList>
 
         <TabsContent value="performance" className="space-y-6">
@@ -295,6 +299,70 @@ const PortfolioAnalytics = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="trustgraph" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TrustGraphScore score={trustGraphData.score} showDetails={true} size="full" />
+            
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle>Score History</CardTitle>
+                <CardDescription>Your TrustGraph score over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-[300px]">
+                  <AreaChart data={[
+                    { month: 'Jan', score: 680 },
+                    { month: 'Feb', score: 695 },
+                    { month: 'Mar', score: 710 },
+                    { month: 'Apr', score: 705 },
+                    { month: 'May', score: 720 },
+                    { month: 'Jun', score: trustGraphData.score }
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis domain={[600, 800]} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Area
+                      type="monotone"
+                      dataKey="score"
+                      stroke="hsl(var(--primary))"
+                      fill="hsl(var(--primary))"
+                      fillOpacity={0.2}
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>How to Improve Your Score</CardTitle>
+              <CardDescription>Recommendations based on your current activity</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-green-50 dark:bg-green-950/50 rounded-lg border border-green-200 dark:border-green-800">
+                  <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">Strengths</h4>
+                  <ul className="space-y-1 text-sm text-green-700 dark:text-green-300">
+                    <li>• Excellent transaction history</li>
+                    <li>• Perfect loan repayment record</li>
+                    <li>• Good protocol diversity</li>
+                  </ul>
+                </div>
+                <div className="p-4 bg-blue-50 dark:bg-blue-950/50 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Improvement Areas</h4>
+                  <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
+                    <li>• Increase governance participation (+50 points)</li>
+                    <li>• Add more liquidity provision (+30 points)</li>
+                    <li>• Maintain consistent activity (+20 points)</li>
+                  </ul>
+                </div>
               </div>
             </CardContent>
           </Card>
