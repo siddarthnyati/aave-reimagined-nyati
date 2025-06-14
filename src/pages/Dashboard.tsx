@@ -12,11 +12,21 @@ import WalletGuard from '@/components/auth/WalletGuard';
 import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, DollarSign, PieChart, BarChart3 } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, BarChart3, Shield } from 'lucide-react';
 import { getUserTrustGraphData } from '@/lib/trustgraph';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Dashboard = () => {
   const trustGraphData = getUserTrustGraphData();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Get tab from URL params, default to 'overview'
+  const currentTab = searchParams.get('tab') || 'overview';
+
+  const handleTrustGraphClick = () => {
+    navigate('/dashboard?tab=analytics&focus=trustgraph');
+  };
 
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
@@ -101,10 +111,13 @@ const Dashboard = () => {
                 Manage your portfolio and track your DeFi activities
               </p>
             </div>
-            <TrustGraphScore score={trustGraphData.score} />
+            <TrustGraphScore 
+              score={trustGraphData.score} 
+              onClick={handleTrustGraphClick}
+            />
           </div>
 
-          <Tabs defaultValue="overview" className="space-y-8">
+          <Tabs value={currentTab} className="space-y-8">
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>

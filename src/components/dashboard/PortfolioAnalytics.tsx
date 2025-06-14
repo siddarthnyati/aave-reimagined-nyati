@@ -5,9 +5,15 @@ import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, BarChart, Bar, X
 import { TrendingUp, TrendingDown, DollarSign, Percent, Target, Award, AlertTriangle, BarChart3 } from 'lucide-react';
 import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
 import { getUserTrustGraphData } from '@/lib/trustgraph';
+import { useSearchParams } from 'react-router-dom';
 
 const PortfolioAnalytics = () => {
   const trustGraphData = getUserTrustGraphData();
+  const [searchParams] = useSearchParams();
+  
+  // Check if focus parameter is set to trustgraph
+  const focusTab = searchParams.get('focus');
+  const defaultTab = focusTab === 'trustgraph' ? 'trustgraph' : 'performance';
 
   // Portfolio performance data
   const performanceData = [
@@ -120,7 +126,7 @@ const PortfolioAnalytics = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="performance" className="space-y-6">
+      <Tabs defaultValue={defaultTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="allocation">Allocation</TabsTrigger>

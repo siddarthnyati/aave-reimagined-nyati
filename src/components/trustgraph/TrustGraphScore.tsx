@@ -9,16 +9,24 @@ interface TrustGraphScoreProps {
   score: number;
   showDetails?: boolean;
   size?: 'compact' | 'full';
+  onClick?: () => void;
 }
 
-const TrustGraphScore = ({ score, showDetails = false, size = 'compact' }: TrustGraphScoreProps) => {
+const TrustGraphScore = ({ score, showDetails = false, size = 'compact', onClick }: TrustGraphScoreProps) => {
   const grade = getTrustGraphGrade(score);
   const tier = getTrustGraphTier(score);
   const color = getTrustGraphColor(score);
 
   if (size === 'compact') {
     return (
-      <div className="flex items-center space-x-3">
+      <div 
+        className={`flex items-center space-x-3 ${onClick ? 'cursor-pointer hover:scale-105 transition-transform duration-200' : ''}`}
+        onClick={onClick}
+        role={onClick ? 'button' : undefined}
+        tabIndex={onClick ? 0 : undefined}
+        onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
+        aria-label={onClick ? `View detailed TrustGraph score analysis. Current score: ${score}` : undefined}
+      >
         <div className="flex items-center space-x-2">
           <Shield className="w-5 h-5 text-primary" />
           <div>
@@ -34,7 +42,14 @@ const TrustGraphScore = ({ score, showDetails = false, size = 'compact' }: Trust
   }
 
   return (
-    <Card className="glass-card">
+    <Card 
+      className={`glass-card ${onClick ? 'cursor-pointer hover:scale-105 transition-transform duration-200' : ''}`}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); } : undefined}
+      aria-label={onClick ? `View detailed TrustGraph score analysis. Current score: ${score}` : undefined}
+    >
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Shield className="w-6 h-6 text-primary" />
