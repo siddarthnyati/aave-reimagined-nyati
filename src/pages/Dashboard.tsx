@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WalletOverview from '@/components/dashboard/WalletOverview';
@@ -14,9 +13,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, DollarSign, PieChart, BarChart3 } from 'lucide-react';
 import { getUserTrustGraphData } from '@/lib/trustgraph';
+import { useSearchParams } from 'react-router-dom';
 
 const Dashboard = () => {
   const trustGraphData = getUserTrustGraphData();
+  const [searchParams] = useSearchParams();
+  
+  // Get the tab from URL params or default to 'overview'
+  const defaultTab = searchParams.get('tab') || 'overview';
+  const focusElement = searchParams.get('focus');
 
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
@@ -104,7 +109,7 @@ const Dashboard = () => {
             <TrustGraphScore score={trustGraphData.score} />
           </div>
 
-          <Tabs defaultValue="overview" className="space-y-8">
+          <Tabs defaultValue={defaultTab} className="space-y-8">
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -124,6 +129,22 @@ const Dashboard = () => {
 
             <TabsContent value="analytics" className="space-y-8">
               <PortfolioAnalytics />
+              {focusElement === 'trustgraph' && (
+                <div className="mt-8">
+                  <Card className="glass-card">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <Shield className="w-6 h-6 text-primary" />
+                        <span>TrustGraph Score Details</span>
+                      </CardTitle>
+                      <CardDescription>Detailed breakdown of your DeFi creditworthiness</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <TrustGraphScore score={trustGraphData.score} showDetails={true} size="full" />
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="portfolio" className="space-y-8">
