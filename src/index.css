@@ -1,81 +1,41 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Light theme colors */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 155 100% 35%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 155 100% 35%;
-
-    --radius: 0.75rem;
-
-    /* Custom variables for light theme */
-    --gradient-primary: linear-gradient(135deg, #00cc66 0%, #0099cc 100%);
-    --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --glow-green: rgba(0, 204, 102, 0.2);
-    --glow-blue: rgba(0, 153, 204, 0.2);
-  }
-
-  .dark {
-    /* Dark theme colors - reverted to deep blacks */
-    --background: 0 0% 0%;
+    --background: 8 12% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 0 0% 4%;
+    --card: 12 16% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 4%;
+    --popover: 12 16% 12%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 155 100% 45%;
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 8 12% 8%;
 
-    --secondary: 0 0% 8%;
+    --secondary: 217 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 0 0% 8%;
+    --muted: 217 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 0 0% 8%;
+    --accent: 217 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 10%;
-    --input: 0 0% 10%;
+    --border: 217 32.6% 17.5%;
+    --input: 217 32.6% 17.5%;
     --ring: 155 100% 45%;
 
     --radius: 0.75rem;
 
-    /* Custom variables for dark theme */
+    /* Custom variables for the crypto platform */
     --gradient-primary: linear-gradient(135deg, #00ff88 0%, #00b8ff 100%);
     --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -88,18 +48,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter transition-colors duration-300;
-  }
-
-  /* Light theme background */
-  body:not(.dark) {
-    background: radial-gradient(ellipse at top, rgba(0, 204, 102, 0.05) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom, rgba(0, 153, 204, 0.05) 0%, transparent 50%),
-                linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  }
-
-  /* Dark theme background (your stellar look) */
-  .dark body {
+    @apply bg-background text-foreground font-inter;
     background: radial-gradient(ellipse at top, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
                 radial-gradient(ellipse at bottom, rgba(0, 184, 255, 0.1) 0%, transparent 50%),
                 hsl(var(--background));
@@ -110,17 +59,7 @@
   }
 
   .glass-card {
-    @apply backdrop-blur-xl border transition-all duration-300;
-  }
-
-  /* Light theme glass effect */
-  body:not(.dark) .glass-card {
-    @apply bg-white/70 border-white/20 shadow-sm;
-  }
-
-  /* Dark theme glass effect */
-  .dark .glass-card {
-    @apply bg-white/5 border-white/10;
+    @apply backdrop-blur-xl bg-white/5 border border-white/10;
   }
 
   .gradient-text {
@@ -148,56 +87,21 @@
   }
 
   .hover-lift {
-    @apply transition-all duration-300 hover:scale-105;
-  }
-
-  /* Light theme hover effects */
-  body:not(.dark) .hover-lift:hover {
-    @apply shadow-lg;
-  }
-
-  /* Dark theme hover effects */
-  .dark .hover-lift:hover {
-    @apply shadow-2xl;
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl;
   }
 
   .text-shadow {
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
-
-  /* Light theme text shadow */
-  body:not(.dark) .text-shadow {
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105;
-  }
-
-  /* Light theme button shadow */
-  body:not(.dark) .btn-primary {
-    @apply shadow-md hover:shadow-lg;
-  }
-
-  /* Dark theme button shadow */
-  .dark .btn-primary {
-    @apply hover:shadow-lg;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg;
   }
 
   .btn-secondary {
-    @apply glass-card hover:bg-opacity-20 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105;
-  }
-
-  /* Light theme secondary button */
-  body:not(.dark) .btn-secondary {
-    @apply hover:bg-gray-100/50;
-  }
-
-  /* Dark theme secondary button */
-  .dark .btn-secondary {
-    @apply hover:bg-white/10;
+    @apply glass-card hover:bg-white/10 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105;
   }
 
   .metric-card {
