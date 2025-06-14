@@ -3,6 +3,7 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WalletProvider } from "@/contexts/WalletContext";
@@ -20,26 +21,33 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <WalletProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/markets" element={<Markets />} />
-            <Route path="/credit-card" element={<CreditCard />} />
-            <Route path="/staking" element={<Staking />} />
-            <Route path="/nft-lending" element={<NFTLending />} />
-            <Route path="/venture-vaults" element={<VentureVaults />} />
-            <Route path="/borrow-lend" element={<BorrowLend />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </WalletProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem
+      disableTransitionOnChange={false}
+    >
+      <WalletProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/markets" element={<Markets />} />
+              <Route path="/credit-card" element={<CreditCard />} />
+              <Route path="/staking" element={<Staking />} />
+              <Route path="/nft-lending" element={<NFTLending />} />
+              <Route path="/venture-vaults" element={<VentureVaults />} />
+              <Route path="/borrow-lend" element={<BorrowLend />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </WalletProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

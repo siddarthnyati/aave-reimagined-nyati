@@ -58,7 +58,7 @@ const TrustGraphScore = ({ score, showDetails = false, size = 'compact' }: Trust
         </div>
 
         {showDetails && (
-          <div className="space-y-3 pt-4 border-t">
+          <div className="space-y-3 pt-4 border-t border-border">
             <h4 className="font-semibold text-sm flex items-center gap-2">
               <Info className="w-4 h-4" />
               Score Factors
@@ -66,27 +66,27 @@ const TrustGraphScore = ({ score, showDetails = false, size = 'compact' }: Trust
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Transaction History</span>
-                <span className="text-green-600">Excellent (25%)</span>
+                <span className="text-green-600 dark:text-green-400">Excellent (25%)</span>
               </div>
               <div className="flex justify-between">
                 <span>Protocol Interaction</span>
-                <span className="text-green-600">Very Good (20%)</span>
+                <span className="text-green-600 dark:text-green-400">Very Good (20%)</span>
               </div>
               <div className="flex justify-between">
                 <span>Liquidity Provision</span>
-                <span className="text-yellow-600">Good (15%)</span>
+                <span className="text-yellow-600 dark:text-yellow-400">Good (15%)</span>
               </div>
               <div className="flex justify-between">
                 <span>Loan Repayment</span>
-                <span className="text-green-600">Excellent (20%)</span>
+                <span className="text-green-600 dark:text-green-400">Excellent (20%)</span>
               </div>
               <div className="flex justify-between">
                 <span>Governance Participation</span>
-                <span className="text-yellow-600">Fair (10%)</span>
+                <span className="text-yellow-600 dark:text-yellow-400">Fair (10%)</span>
               </div>
               <div className="flex justify-between">
                 <span>Time in Ecosystem</span>
-                <span className="text-green-600">Very Good (10%)</span>
+                <span className="text-green-600 dark:text-green-400">Very Good (10%)</span>
               </div>
             </div>
           </div>

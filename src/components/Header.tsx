@@ -1,9 +1,9 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Wallet, Menu, X, TrendingUp, ChevronDown } from 'lucide-react';
 import { useWallet } from '@/contexts/WalletContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import WalletModal from './WalletModal';
 import {
   DropdownMenu,
@@ -36,7 +36,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="glass-card border-b border-white/10 sticky top-0 z-50">
+      <header className="glass-card border-b border-white/10 dark:border-white/10 border-black/10 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -72,8 +72,9 @@ const Header = () => {
               </Link>
             </nav>
 
-            {/* Wallet Connection */}
+            {/* Wallet Connection & Theme Toggle */}
             <div className="hidden md:flex items-center space-x-4">
+              <ThemeToggle />
               {isConnected ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -146,6 +147,10 @@ const Header = () => {
                 <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
                   NFT Lending
                 </Link>
+                <div className="flex items-center justify-between pt-4 border-t border-white/10 dark:border-white/10 border-black/10">
+                  <span className="text-sm text-muted-foreground">Theme</span>
+                  <ThemeToggle />
+                </div>
                 {isConnected ? (
                   <div className="space-y-2">
                     <div className="text-sm text-muted-foreground">
