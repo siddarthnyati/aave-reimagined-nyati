@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Wallet, Menu, X, TrendingUp, ChevronDown } from 'lucide-react';
 import { useWallet } from '@/contexts/WalletContext';
 import WalletModal from './WalletModal';
+import TourStartButton from './tour/TourStartButton';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +40,7 @@ const Header = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group">
+            <Link to="/" className="flex items-center space-x-2 group" data-tour="logo">
               <div className="w-8 h-8 bg-gradient-to-r from-primary to-blue-400 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-5 h-5 text-black" />
               </div>
@@ -52,7 +52,7 @@ const Header = () => {
               <Link to="/markets" className="text-muted-foreground hover:text-primary transition-colors">
                 Markets
               </Link>
-              <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors" data-tour="dashboard-link">
                 Dashboard
               </Link>
               <Link to="/borrow-lend" className="text-muted-foreground hover:text-primary transition-colors">
@@ -74,6 +74,7 @@ const Header = () => {
 
             {/* Wallet Connection */}
             <div className="hidden md:flex items-center space-x-4">
+              <TourStartButton />
               {isConnected ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -105,6 +106,7 @@ const Header = () => {
                 <Button 
                   className="btn-primary group"
                   onClick={() => setWalletModalOpen(true)}
+                  data-tour="connect-wallet"
                 >
                   <Wallet className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                   Connect Wallet
@@ -146,6 +148,7 @@ const Header = () => {
                 <Link to="/nft-lending" className="text-muted-foreground hover:text-primary transition-colors">
                   NFT Lending
                 </Link>
+                <TourStartButton />
                 {isConnected ? (
                   <div className="space-y-2">
                     <div className="text-sm text-muted-foreground">

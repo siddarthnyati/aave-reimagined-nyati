@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WalletOverview from '@/components/dashboard/WalletOverview';
@@ -50,7 +49,7 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" data-tour="portfolio-cards">
         <Card className="glass-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -131,7 +130,7 @@ const Dashboard = () => {
           <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-8">
             <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="ai-strategies">
+              <TabsTrigger value="ai-strategies" data-tour="ai-strategies-tab">
                 <Bot className="w-4 h-4 mr-1" />
                 AI Strategies
               </TabsTrigger>
@@ -142,7 +141,9 @@ const Dashboard = () => {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-8">
-              <WalletOverview />
+              <div data-tour="portfolio-cards">
+                <WalletOverview />
+              </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <SupplySection />
                 <BorrowSection />
@@ -151,7 +152,9 @@ const Dashboard = () => {
             </TabsContent>
 
             <TabsContent value="ai-strategies" className="space-y-8">
-              <AIStrategiesSection />
+              <div data-tour="rebalancing-section">
+                <AIStrategiesSection />
+              </div>
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-8">
@@ -179,7 +182,9 @@ const Dashboard = () => {
       <Footer />
       
       {/* AI Assistant - Available on all pages */}
-      <AILendingAssistant onActionSuggestion={handleAIAction} />
+      <div data-tour="ai-assistant">
+        <AILendingAssistant onActionSuggestion={handleAIAction} />
+      </div>
     </div>
   );
 };
