@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,14 +9,16 @@ import {
   Bot, 
   Send, 
   Minimize2, 
-  Maximize2, 
   MessageCircle, 
   TrendingUp, 
   Shield, 
   Zap,
   DollarSign,
-  AlertTriangle
+  AlertTriangle,
+  Trash2,
+  Copy
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatMessage {
   id: string;
@@ -46,16 +48,21 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { isConnected } = useWallet();
+  const { toast } = useToast();
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages, scrollToBottom]);
 
   const quickIntents = [
     { label: 'Best Borrow Rate', icon: TrendingUp, action: () => handleQuickIntent('Find me the best borrowing rates available') },
@@ -64,18 +71,21 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
     { label: 'Optimize Portfolio', icon: Zap, action: () => handleQuickIntent('How can I optimize my lending portfolio?') }
   ];
 
-  const handleQuickIntent = (intent: string) => {
+  const handleQuickIntent = useCallback((intent: string) => {
+    if (isProcessing) return;
     setInputValue(intent);
     handleSendMessage(intent);
-  };
+  }, [isProcessing]);
 
-  const handleSendMessage = async (message?: string) => {
+  const handleSendMessage = useCallback(async (message?: string) => {
     const messageText = message || inputValue.trim();
-    if (!messageText) return;
+    if (!messageText || isProcessing) return;
 
-    // Add user message
+    setIsProcessing(true);
+    
+    // Add user message immediately
     const userMessage: ChatMessage = {
-      id: Date.now().toString(),
+      id: `user-${Date.now()}`,
       type: 'user',
       content: messageText,
       timestamp: new Date()
@@ -85,20 +95,33 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      // Simulate AI response with proper delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       const response = generateAIResponse(messageText);
       setMessages(prev => [...prev, response]);
+    } catch (error) {
+      console.error('Error generating response:', error);
+      const errorMessage: ChatMessage = {
+        id: `error-${Date.now()}`,
+        type: 'assistant',
+        content: "I'm sorry, I encountered an error processing your request. Please try again.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
-  };
+      setIsProcessing(false);
+    }
+  }, [inputValue, isProcessing]);
 
-  const generateAIResponse = (userMessage: string): ChatMessage => {
+  const generateAIResponse = useCallback((userMessage: string): ChatMessage => {
     const lowerMessage = userMessage.toLowerCase();
     
     if (lowerMessage.includes('borrow') && lowerMessage.includes('rate')) {
       return {
-        id: Date.now().toString(),
+        id: `assistant-${Date.now()}`,
         type: 'assistant',
         content: "Based on current market conditions, here are the best borrowing rates available:\n\n• USDC: 4.2% APR (Stablecoin pool)\n• DAI: 4.5% APR (Decentralized stable)\n• USDT: 3.8% APR (Highest liquidity)\n\nFor your risk profile, I recommend USDC with its balance of low rates and high security.",
         timestamp: new Date(),
@@ -118,7 +141,7 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
 
     if (lowerMessage.includes('max') && lowerMessage.includes('borrow')) {
       return {
-        id: Date.now().toString(),
+        id: `assistant-${Date.now()}`,
         type: 'assistant',
         content: isConnected 
           ? "Based on your current collateral:\n\n• Available to borrow: $45,230\n• Recommended safe limit: $38,500 (85% of max)\n• Current health factor: 2.1 (Healthy)\n\nBorrowing up to the safe limit maintains a 1.5+ health factor to avoid liquidation risk."
@@ -146,7 +169,7 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
 
     if (lowerMessage.includes('liquidation') || lowerMessage.includes('risk')) {
       return {
-        id: Date.now().toString(),
+        id: `assistant-${Date.now()}`,
         type: 'assistant',
         content: isConnected
           ? "Your liquidation risk analysis:\n\n• Current health factor: 2.1 ✅\n• Liquidation price (ETH): $1,850 📊\n• Risk level: Low 🟢\n\nYou're well protected! ETH would need to drop 31% from current levels for liquidation risk. I can set up alerts to monitor this for you."
@@ -174,7 +197,7 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
 
     if (lowerMessage.includes('optimize') || lowerMessage.includes('portfolio')) {
       return {
-        id: Date.now().toString(),
+        id: `assistant-${Date.now()}`,
         type: 'assistant',
         content: "I've analyzed your portfolio and found optimization opportunities:\n\n💡 **Yield Enhancement**\n• Move 30% USDC to higher-yield DAI pool (+0.3% APY)\n• Consider ETH staking rewards (+2.1% additional)\n\n⚡ **Efficiency Improvements**\n• Your LTV is conservative at 45% - you could safely increase to 60%\n• Rebalancing could free up $12,500 in borrowing power",
         timestamp: new Date(),
@@ -194,19 +217,47 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
 
     // Default response
     return {
-      id: Date.now().toString(),
+      id: `assistant-${Date.now()}`,
       type: 'assistant',
       content: "I can help you with:\n\n• Finding the best borrowing and lending rates\n• Calculating your maximum safe borrowing capacity\n• Monitoring liquidation risks and health factors\n• Optimizing your portfolio for better yields\n• Setting up automated alerts and rebalancing\n\nWhat would you like to explore?",
       timestamp: new Date()
     };
-  };
+  }, [isConnected, onActionSuggestion]);
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }, [handleSendMessage]);
+
+  const clearChat = useCallback(() => {
+    setMessages([{
+      id: '1',
+      type: 'assistant',
+      content: "Chat cleared! How can I help you with your DeFi lending strategy?",
+      timestamp: new Date()
+    }]);
+    toast({
+      title: "Chat Cleared",
+      description: "Your conversation history has been cleared.",
+    });
+  }, [toast]);
+
+  const copyMessage = useCallback((content: string) => {
+    navigator.clipboard.writeText(content);
+    toast({
+      title: "Copied",
+      description: "Message copied to clipboard",
+    });
+  }, [toast]);
 
   if (!isExpanded) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsExpanded(true)}
-          className="rounded-full w-14 h-14 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg"
+          className="rounded-full w-14 h-14 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 shadow-lg animate-pulse"
           size="lg"
         >
           <Bot className="w-6 h-6" />
@@ -228,6 +279,15 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={clearChat}
+                className="text-white hover:bg-white/20 p-2"
+                title="Clear chat"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setIsExpanded(false)}
                 className="text-white hover:bg-white/20 p-2"
               >
@@ -242,7 +302,7 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
           )}
         </CardHeader>
 
-        <CardContent className="flex-1 flex flex-col p-0">
+        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
           {/* Quick Intents */}
           <div className="p-4 border-b bg-muted/30">
             <div className="grid grid-cols-2 gap-2">
@@ -253,6 +313,7 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
                   size="sm"
                   onClick={intent.action}
                   className="h-auto p-2 text-xs"
+                  disabled={isProcessing}
                 >
                   <intent.icon className="w-3 h-3 mr-1" />
                   {intent.label}
@@ -262,28 +323,41 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[400px]">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div
-                  className={`max-w-[80%] p-3 rounded-lg whitespace-pre-line ${
-                    message.type === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
-                  }`}
-                >
-                  {message.type === 'assistant' && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <Bot className="w-4 h-4" />
-                      <span className="text-xs font-medium">DeFiBot</span>
-                    </div>
-                  )}
-                  <p className="text-sm">{message.content}</p>
+                <div className="max-w-[85%] group">
+                  <div
+                    className={`p-3 rounded-lg whitespace-pre-line relative ${
+                      message.type === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
+                    }`}
+                  >
+                    {message.type === 'assistant' && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <Bot className="w-4 h-4" />
+                        <span className="text-xs font-medium">DeFiBot</span>
+                      </div>
+                    )}
+                    <p className="text-sm break-words">{message.content}</p>
+                    
+                    {/* Copy button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyMessage(message.content)}
+                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1 h-auto"
+                    >
+                      <Copy className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  
                   {message.actions && (
-                    <div className="flex gap-2 mt-3 flex-wrap">
+                    <div className="flex gap-2 mt-2 flex-wrap">
                       {message.actions.map((action, index) => (
                         <Button
                           key={index}
@@ -291,6 +365,7 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
                           variant={action.variant || 'default'}
                           onClick={action.action}
                           className="text-xs"
+                          disabled={isProcessing}
                         >
                           {action.label}
                         </Button>
@@ -300,9 +375,10 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
                 </div>
               </div>
             ))}
+            
             {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-muted p-3 rounded-lg">
+                <div className="bg-muted p-3 rounded-lg max-w-[85%]">
                   <div className="flex items-center gap-2">
                     <Bot className="w-4 h-4" />
                     <div className="flex space-x-1">
@@ -321,13 +397,19 @@ const AILendingAssistant = ({ onActionSuggestion }: AILendingAssistantProps) => 
           <div className="p-4 border-t bg-background">
             <div className="flex gap-2">
               <Input
+                ref={inputRef}
                 placeholder="Ask me anything about lending..."
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyPress={handleKeyPress}
                 className="flex-1"
+                disabled={isProcessing}
               />
-              <Button onClick={() => handleSendMessage()} size="sm">
+              <Button 
+                onClick={() => handleSendMessage()} 
+                size="sm"
+                disabled={isProcessing || !inputValue.trim()}
+              >
                 <Send className="w-4 h-4" />
               </Button>
             </div>
