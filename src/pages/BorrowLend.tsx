@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -6,9 +5,55 @@ import Header from '@/components/Header';
 import CryptoLending from '@/components/borrow/CryptoLending';
 import StockLoans from '@/components/borrow/StockLoans';
 import WalletGuard from '@/components/auth/WalletGuard';
+import AILendingAssistant from '@/components/ai/AILendingAssistant';
 import { DollarSign, TrendingUp, Shield, Users } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const BorrowLend = () => {
+  const { toast } = useToast();
+
+  const handleAIActionSuggestion = (action: string, params: any) => {
+    console.log('AI Action:', action, params);
+    
+    switch (action) {
+      case 'borrow':
+        toast({
+          title: "Redirecting to Borrow",
+          description: `Setting up borrow for ${params.asset || 'selected asset'}`,
+        });
+        break;
+      case 'connectWallet':
+        toast({
+          title: "Connect Wallet",
+          description: "Please connect your wallet to get personalized advice",
+        });
+        break;
+      case 'setAlert':
+        toast({
+          title: "Alert Set",
+          description: `Liquidation alert set for health factor ${params.threshold}`,
+        });
+        break;
+      case 'optimize':
+        toast({
+          title: "Optimization Applied",
+          description: "Portfolio optimization suggestions applied",
+        });
+        break;
+      case 'simulate':
+        toast({
+          title: "Simulation Started",
+          description: "Running portfolio simulation...",
+        });
+        break;
+      default:
+        toast({
+          title: "Action Triggered",
+          description: `AI suggested action: ${action}`,
+        });
+    }
+  };
+
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -102,6 +147,9 @@ const BorrowLend = () => {
           </Tabs>
         </WalletGuard>
       </div>
+
+      {/* AI Lending Assistant */}
+      <AILendingAssistant onActionSuggestion={handleAIActionSuggestion} />
     </div>
   );
 };
