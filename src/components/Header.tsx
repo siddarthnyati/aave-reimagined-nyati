@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { WalletModal } from './WalletModal';
+import WalletModal from './WalletModal';
 import TourStartButton from '@/components/tour/TourStartButton';
 import { useWallet } from '@/contexts/WalletContext';
 import { 
@@ -22,7 +22,7 @@ import {
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const { isConnected, address, balance } = useWallet();
+  const { isConnected, walletAddress, balance } = useWallet();
   const location = useLocation();
 
   const navigation = [
@@ -46,6 +46,14 @@ const Header = () => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(bal);
+  };
+
+  // Calculate total balance in USD
+  const getTotalBalance = () => {
+    const prices = { ETH: 3200, USDC: 1, BTC: 65000, LINK: 15, UNI: 8, AAVE: 120 };
+    return Object.entries(balance).reduce((total, [token, amount]) => {
+      return total + (amount * (prices[token as keyof typeof prices] || 0));
+    }, 0);
   };
 
   return (
@@ -98,9 +106,9 @@ const Header = () => {
             {isConnected ? (
               <div className="flex items-center gap-3">
                 <div className="hidden sm:block text-right">
-                  <div className="text-sm font-medium">{formatBalance(balance)}</div>
+                  <div className="text-sm font-medium">{formatBalance(getTotalBalance())}</div>
                   <div className="text-xs text-muted-foreground">
-                    {formatAddress(address)}
+                    {walletAddress && formatAddress(walletAddress)}
                   </div>
                 </div>
                 <Button
@@ -171,8 +179,8 @@ const Header = () => {
       </header>
 
       <WalletModal 
-        isOpen={isWalletModalOpen} 
-        onClose={() => setIsWalletModalOpen(false)} 
+        open={isWalletModalOpen} 
+        onOpenChange={setIsWalletModalOpen} 
       />
     </>
   );
