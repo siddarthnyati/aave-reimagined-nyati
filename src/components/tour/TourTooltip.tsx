@@ -33,64 +33,84 @@ const TourTooltip = () => {
     }
 
     const updatePosition = () => {
-      const targetElement = document.querySelector(currentStepData.target);
-      if (!targetElement || !tooltipRef.current) {
-        setIsVisible(false);
-        return;
-      }
-
-      const targetRect = targetElement.getBoundingClientRect();
-      const tooltipRect = tooltipRef.current.getBoundingClientRect();
-      const offset = 16;
-
-      let top = 0;
-      let left = 0;
-
-      switch (currentStepData.position) {
-        case 'top':
-          top = targetRect.top - tooltipRect.height - offset;
-          left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
-          break;
-        case 'bottom':
-          top = targetRect.bottom + offset;
-          left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
-          break;
-        case 'left':
-          top = targetRect.top + (targetRect.height - tooltipRect.height) / 2;
-          left = targetRect.left - tooltipRect.width - offset;
-          break;
-        case 'right':
-          top = targetRect.top + (targetRect.height - tooltipRect.height) / 2;
-          left = targetRect.right + offset;
-          break;
-      }
-
-      // Keep tooltip within viewport
-      const margin = 16;
-      top = Math.max(margin, Math.min(top, window.innerHeight - tooltipRect.height - margin));
-      left = Math.max(margin, Math.min(left, window.innerWidth - tooltipRect.width - margin));
-
-      setPosition({ top, left });
-      setIsVisible(true);
-
-      // Highlight target element
-      targetElement.classList.add('tour-highlight');
+      // Wait for DOM updates with multiple retries
+      let retries = 0;
+      const maxRetries = 10;
       
-      // Scroll target into view if needed
-      targetElement.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center',
-        inline: 'center'
-      });
+      const findTarget = () => {
+        const targetElement = document.querySelector(currentStepData.target);
+        
+        if (!targetElement && retries < maxRetries) {
+          retries++;
+          setTimeout(findTarget, 200);
+          return;
+        }
+        
+        if (!targetElement || !tooltipRef.current) {
+          console.log('Tour target not found:', currentStepData.target);
+          setIsVisible(false);
+          return;
+        }
+
+        const targetRect = targetElement.getBoundingClientRect();
+        const tooltipRect = tooltipRef.current.getBoundingClientRect();
+        const offset = 16;
+
+        let top = 0;
+        let left = 0;
+
+        switch (currentStepData.position) {
+          case 'top':
+            top = targetRect.top - tooltipRect.height - offset;
+            left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
+            break;
+          case 'bottom':
+            top = targetRect.bottom + offset;
+            left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
+            break;
+          case 'left':
+            top = targetRect.top + (targetRect.height - tooltipRect.height) / 2;
+            left = targetRect.left - tooltipRect.width - offset;
+            break;
+          case 'right':
+            top = targetRect.top + (targetRect.height - tooltipRect.height) / 2;
+            left = targetRect.right + offset;
+            break;
+        }
+
+        // Keep tooltip within viewport
+        const margin = 16;
+        top = Math.max(margin, Math.min(top, window.innerHeight - tooltipRect.height - margin));
+        left = Math.max(margin, Math.min(left, window.innerWidth - tooltipRect.width - margin));
+
+        setPosition({ top, left });
+        setIsVisible(true);
+
+        // Highlight target element
+        document.querySelectorAll('.tour-highlight').forEach(el => {
+          el.classList.remove('tour-highlight');
+        });
+        targetElement.classList.add('tour-highlight');
+        
+        // Scroll target into view if needed
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'center'
+        });
+      };
+      
+      findTarget();
     };
 
-    // Wait for DOM updates
-    const timer = setTimeout(updatePosition, 100);
+    // Initial position update
+    updatePosition();
+    
+    // Listen for window events
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition);
 
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition);
       

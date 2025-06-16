@@ -94,13 +94,13 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       // Auto-start tour for first-time visitors after a short delay
       const timer = setTimeout(() => {
-        if (!hasSeenTour) {
+        if (!hasSeenTour && !isActive) {
           startTour();
         }
-      }, 1000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [hasSeenTour]);
+  }, [hasSeenTour, isActive]);
 
   const startTour = () => {
     setIsActive(true);
