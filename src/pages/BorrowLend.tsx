@@ -1,69 +1,43 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import CryptoLending from '@/components/borrow/CryptoLending';
 import StockLoans from '@/components/borrow/StockLoans';
-import WalletGuard from '@/components/auth/WalletGuard';
 import AILendingAssistant from '@/components/ai/AILendingAssistant';
-import { DollarSign, TrendingUp, Shield, Users } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import WalletGuard from '@/components/auth/WalletGuard';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TrendingUp, DollarSign, Coins, Building2 } from 'lucide-react';
 
 const BorrowLend = () => {
-  const { toast } = useToast();
-
-  const handleAIActionSuggestion = (action: string, params: any) => {
-    console.log('AI Action:', action, params);
-    
-    switch (action) {
-      case 'borrow':
-        toast({
-          title: "Redirecting to Borrow",
-          description: `Setting up borrow for ${params.asset || 'selected asset'}`,
-        });
-        break;
-      case 'connectWallet':
-        toast({
-          title: "Connect Wallet",
-          description: "Please connect your wallet to get personalized advice",
-        });
-        break;
-      case 'setAlert':
-        toast({
-          title: "Alert Set",
-          description: `Liquidation alert set for health factor ${params.threshold}`,
-        });
-        break;
-      case 'optimize':
-        toast({
-          title: "Optimization Applied",
-          description: "Portfolio optimization suggestions applied",
-        });
-        break;
-      case 'simulate':
-        toast({
-          title: "Simulation Started",
-          description: "Running portfolio simulation...",
-        });
-        break;
-      default:
-        toast({
-          title: "Action Triggered",
-          description: `AI suggested action: ${action}`,
-        });
-    }
+  const handleAIAction = (action: string, params: any) => {
+    console.log('AI Action triggered:', action, params);
+    // Handle AI assistant actions here - could navigate to specific lending opportunities,
+    // pre-fill forms, or trigger specific strategies
   };
 
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">
+          <span className="gradient-text">Borrow & Lend</span>
+        </h1>
+        <p className="text-muted-foreground">
+          Access crypto lending and stock-backed loans
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="glass-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Total Supplied</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Best Rates
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-primary">$142.3M</p>
-            <p className="text-sm text-green-500">+5.2% this month</p>
+            <p className="text-2xl font-bold text-primary">4.2%</p>
+            <p className="text-sm text-muted-foreground">USDC Lending</p>
           </CardContent>
         </Card>
 
@@ -72,28 +46,18 @@ const BorrowLend = () => {
             <CardTitle className="text-lg">Total Borrowed</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">$89.2M</p>
-            <p className="text-sm text-blue-500">Active loans</p>
+            <p className="text-2xl font-bold">$45,600</p>
+            <p className="text-sm text-orange-500">Across 5 positions</p>
           </CardContent>
         </Card>
 
         <Card className="glass-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Avg. APY</CardTitle>
+            <CardTitle className="text-lg">Available Credit</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">5.8%</p>
-            <p className="text-sm text-muted-foreground">Lending rate</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Active Users</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-purple-600">12.4K</p>
-            <p className="text-sm text-muted-foreground">Borrowers & Lenders</p>
+            <p className="text-2xl font-bold">$89,200</p>
+            <p className="text-sm text-green-500">Ready to borrow</p>
           </CardContent>
         </Card>
       </div>
@@ -103,38 +67,38 @@ const BorrowLend = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <section className="text-center py-16">
-          <h1 className="text-5xl font-bold gradient-text mb-6">
-            Borrow & Lend
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Unlock liquidity from your crypto and stock portfolios
-          </p>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
-            Borrow against your assets or lend to earn yield across both traditional and decentralized markets.
-          </p>
-        </section>
-
+      <main className="container mx-auto px-4 py-8">
         <WalletGuard 
-          title="Connect Wallet for Lending & Borrowing"
-          description="Access comprehensive lending and borrowing features for both crypto and traditional assets."
+          title="Connect Wallet for Lending Services"
+          description="Access advanced crypto lending and stock-backed loan options with competitive rates."
           features={[
-            "Borrow against crypto and stock portfolios",
-            "Lend assets to earn competitive yields",
-            "Access flash loans for arbitrage opportunities",
-            "Manage all positions in one dashboard"
+            "Borrow against crypto collateral at competitive rates",
+            "Lend crypto assets for passive income",
+            "Use traditional stocks as collateral for crypto loans",
+            "Access institutional-grade risk management"
           ]}
           showPreview={true}
           previewContent={previewContent}
         >
-          {/* Main Content Tabs */}
-          <Tabs defaultValue="crypto" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="crypto">Crypto Lending</TabsTrigger>
-              <TabsTrigger value="stocks">Stock Loans</TabsTrigger>
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">
+              <span className="gradient-text">Borrow & Lend</span>
+            </h1>
+            <p className="text-muted-foreground">
+              Access crypto lending and stock-backed loans with institutional-grade security
+            </p>
+          </div>
+
+          <Tabs defaultValue="crypto" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="crypto" className="flex items-center gap-2">
+                <Coins className="w-4 h-4" />
+                Crypto Lending
+              </TabsTrigger>
+              <TabsTrigger value="stocks" className="flex items-center gap-2">
+                <Building2 className="w-4 h-4" />
+                Stock-Backed Loans
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="crypto">
@@ -146,10 +110,11 @@ const BorrowLend = () => {
             </TabsContent>
           </Tabs>
         </WalletGuard>
-      </div>
-
-      {/* AI Lending Assistant */}
-      <AILendingAssistant onActionSuggestion={handleAIActionSuggestion} />
+      </main>
+      <Footer />
+      
+      {/* AI Assistant - Available to help with lending decisions */}
+      <AILendingAssistant onActionSuggestion={handleAIAction} />
     </div>
   );
 };
