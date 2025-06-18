@@ -2,14 +2,9 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import WalletModal from './WalletModal';
-import TourStartButton from '@/components/tour/TourStartButton';
-import { useWallet } from '@/contexts/WalletContext';
 import { 
   Menu, 
   X, 
-  Wallet, 
   TrendingUp, 
   PieChart,
   CreditCard,
@@ -21,13 +16,11 @@ import {
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const { isConnected, walletAddress, balance } = useWallet();
   const location = useLocation();
 
   const navigation = [
     { name: 'Markets', href: '/markets', icon: TrendingUp },
-    { name: 'Dashboard', href: '/dashboard', icon: PieChart, protected: true },
+    { name: 'Dashboard', href: '/dashboard', icon: PieChart },
     { name: 'Credit Card', href: '/credit-card', icon: CreditCard },
     { name: 'Staking', href: '/staking', icon: Coins },
     { name: 'NFT Lending', href: '/nft-lending', icon: Image },
@@ -35,154 +28,84 @@ const Header = () => {
     { name: 'Borrow/Lend', href: '/borrow-lend', icon: BarChart3 },
   ];
 
-  const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
-
-  const formatBalance = (bal: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(bal);
-  };
-
-  // Calculate total balance in USD
-  const getTotalBalance = () => {
-    const prices = { ETH: 3200, USDC: 1, BTC: 65000, LINK: 15, UNI: 8, AAVE: 120 };
-    return Object.entries(balance).reduce((total, [token, amount]) => {
-      return total + (amount * (prices[token as keyof typeof prices] || 0));
-    }, 0);
-  };
-
   return (
-    <>
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center space-x-2" data-tour="logo">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-primary to-blue-400">
-                <span className="text-lg font-bold text-black">D</span>
-              </div>
-              <span className="hidden font-bold sm:inline-block gradient-text">
-                DeFiLend
-              </span>
-            </Link>
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-20 items-center justify-between px-6">
+        <div className="flex items-center gap-12">
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-blue-400 shadow-lg">
+              <span className="text-xl font-bold text-black">D</span>
+            </div>
+            <span className="hidden font-bold text-2xl sm:inline-block gradient-text">
+              DeFiLend
+            </span>
+          </Link>
 
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+          <nav className="hidden lg:flex items-center space-x-2">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.href;
+              
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`nav-pill group flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                    isActive
+                      ? 'nav-pill-active text-black font-semibold shadow-lg'
+                      : 'text-muted-foreground hover:text-primary'
+                  }`}
+                >
+                  <Icon className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
+                  <span className="hidden xl:inline">{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            className="lg:hidden"
+            size="sm"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="border-t lg:hidden bg-background/95 backdrop-blur">
+          <div className="container mx-auto px-6 py-6">
+            <nav className="grid grid-cols-2 gap-4">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
-                const isDashboard = item.href === '/dashboard';
                 
                 return (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex items-center gap-2 transition-colors hover:text-primary ${
+                    className={`mobile-nav-card group flex flex-col items-center gap-3 p-4 rounded-2xl text-sm font-medium transition-all duration-300 ${
                       isActive
-                        ? 'text-primary font-semibold'
-                        : 'text-muted-foreground'
-                    } ${item.protected && !isConnected ? 'opacity-50' : ''}`}
-                    data-tour={isDashboard ? "dashboard-link" : undefined}
+                        ? 'mobile-nav-card-active text-black font-semibold'
+                        : 'text-muted-foreground hover:text-primary'
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
                   >
-                    <Icon className="w-4 h-4" />
-                    {item.name}
-                    {item.protected && !isConnected && (
-                      <Badge variant="outline" className="text-xs">
-                        Connect Wallet
-                      </Badge>
-                    )}
+                    <Icon className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="text-center">{item.name}</span>
                   </Link>
                 );
               })}
             </nav>
           </div>
-
-          <div className="flex items-center gap-4">
-            <TourStartButton />
-            
-            {isConnected ? (
-              <div className="flex items-center gap-3">
-                <div className="hidden sm:block text-right">
-                  <div className="text-sm font-medium">{formatBalance(getTotalBalance())}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {walletAddress && formatAddress(walletAddress)}
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsWalletModalOpen(true)}
-                  className="flex items-center gap-2"
-                >
-                  <Wallet className="w-4 h-4" />
-                  <span className="hidden sm:inline">Wallet</span>
-                </Button>
-              </div>
-            ) : (
-              <Button
-                onClick={() => setIsWalletModalOpen(true)}
-                className="btn-primary flex items-center gap-2"
-                data-tour="connect-wallet"
-              >
-                <Wallet className="w-4 h-4" />
-                Connect Wallet
-              </Button>
-            )}
-
-            <Button
-              variant="ghost"
-              className="md:hidden"
-              size="sm"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
         </div>
-
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="border-t md:hidden">
-            <div className="container mx-auto px-4 py-4">
-              <nav className="flex flex-col space-y-3">
-                {navigation.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.href;
-                  
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={`flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${
-                        isActive
-                          ? 'text-primary font-semibold'
-                          : 'text-muted-foreground'
-                      } ${item.protected && !isConnected ? 'opacity-50' : ''}`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <Icon className="w-4 h-4" />
-                      {item.name}
-                      {item.protected && !isConnected && (
-                        <Badge variant="outline" className="text-xs ml-auto">
-                          Connect Wallet
-                        </Badge>
-                      )}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <WalletModal 
-        open={isWalletModalOpen} 
-        onOpenChange={setIsWalletModalOpen} 
-      />
-    </>
+      )}
+    </header>
   );
 };
 
