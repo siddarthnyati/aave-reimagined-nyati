@@ -1,5 +1,7 @@
 
 import { Link, useLocation } from 'react-router-dom';
+import { useWallet } from '@/contexts/WalletContext';
+import WalletConnection from './WalletConnection';
 
 const Header = () => {
   const location = useLocation();
@@ -12,6 +14,7 @@ const Header = () => {
     { name: 'Staking', href: '/staking' },
     { name: 'Venture Vaults', href: '/venture-vaults' },
     { name: 'NFT Lending', href: '/nft-lending' },
+    { name: 'Community Contest', href: '/community-contest' },
   ];
 
   return (
@@ -47,6 +50,8 @@ const Header = () => {
             })}
           </nav>
         </div>
+
+        <WalletConnection />
       </div>
     </header>
   );
