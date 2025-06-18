@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
@@ -59,45 +58,45 @@
   /* Enhanced Navigation Styles */
   .nav-pill {
     @apply relative overflow-hidden;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
   }
 
   .nav-pill:hover {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-    border-color: rgba(34, 197, 94, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 40px rgba(34, 197, 94, 0.2);
   }
 
   .nav-pill-active {
     background: linear-gradient(135deg, rgb(34, 197, 94) 0%, rgb(59, 130, 246) 100%);
     border-color: transparent;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 40px rgba(34, 197, 94, 0.4);
   }
 
-  /* Mobile Navigation Cards */
-  .mobile-nav-card {
+  /* Compact Mobile Navigation Items */
+  .mobile-nav-item {
     @apply relative overflow-hidden;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
   }
 
-  .mobile-nav-card:hover {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-    border-color: rgba(34, 197, 94, 0.2);
-    transform: scale(1.02);
-    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15);
+  .mobile-nav-item:hover {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(59, 130, 246, 0.12) 100%);
+    border-color: rgba(34, 197, 94, 0.25);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.15);
   }
 
-  .mobile-nav-card-active {
+  .mobile-nav-item-active {
     background: linear-gradient(135deg, rgb(34, 197, 94) 0%, rgb(59, 130, 246) 100%);
     border-color: transparent;
-    transform: scale(1.02);
-    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
   }
 }
 

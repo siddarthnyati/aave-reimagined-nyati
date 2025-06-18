@@ -31,7 +31,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
-        <div className="flex items-center gap-12">
+        <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center space-x-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-blue-400 shadow-lg">
               <span className="text-xl font-bold text-black">D</span>
@@ -41,7 +41,7 @@ const Header = () => {
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center space-x-2">
+          <nav className="hidden md:flex items-center space-x-2">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.href;
@@ -57,7 +57,7 @@ const Header = () => {
                   }`}
                 >
                   <Icon className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
-                  <span className="hidden xl:inline">{item.name}</span>
+                  <span className="hidden lg:inline">{item.name}</span>
                 </Link>
               );
             })}
@@ -67,7 +67,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
-            className="lg:hidden"
+            className="md:hidden"
             size="sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
@@ -76,11 +76,11 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu - only for small screens */}
       {isMenuOpen && (
-        <div className="border-t lg:hidden bg-background/95 backdrop-blur">
-          <div className="container mx-auto px-6 py-6">
-            <nav className="grid grid-cols-2 gap-4">
+        <div className="border-t md:hidden bg-background/95 backdrop-blur">
+          <div className="container mx-auto px-6 py-4">
+            <nav className="flex flex-col space-y-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
@@ -89,15 +89,15 @@ const Header = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`mobile-nav-card group flex flex-col items-center gap-3 p-4 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                    className={`mobile-nav-item group flex items-center gap-4 p-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                       isActive
-                        ? 'mobile-nav-card-active text-black font-semibold'
+                        ? 'mobile-nav-item-active text-black font-semibold'
                         : 'text-muted-foreground hover:text-primary'
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Icon className="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="text-center">{item.name}</span>
+                    <Icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+                    <span>{item.name}</span>
                   </Link>
                 );
               })}
