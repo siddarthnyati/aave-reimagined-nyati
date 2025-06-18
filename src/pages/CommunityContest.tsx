@@ -34,7 +34,7 @@ const CommunityContest = () => {
       submissions: 89,
       timeLeft: '5 days',
       prize: '1000 USDC',
-      status: 'active',
+      status: 'active' as const,
       creator: '0x1234...5678',
       image: '/placeholder.svg'
     },
@@ -47,7 +47,7 @@ const CommunityContest = () => {
       submissions: 45,
       timeLeft: '12 days',
       prize: '2500 USDC',
-      status: 'active',
+      status: 'active' as const,
       creator: '0xabcd...efgh',
       image: '/placeholder.svg'
     },
@@ -60,7 +60,7 @@ const CommunityContest = () => {
       submissions: 512,
       timeLeft: '2 days',
       prize: '5000 USDC',
-      status: 'voting',
+      status: 'voting' as const,
       creator: '0x9876...5432',
       image: '/placeholder.svg'
     }
@@ -76,7 +76,7 @@ const CommunityContest = () => {
       submissions: 23,
       timeLeft: '8 days',
       prize: '800 USDC',
-      status: 'active',
+      status: 'active' as const,
       creator: 'You',
       image: '/placeholder.svg'
     }
