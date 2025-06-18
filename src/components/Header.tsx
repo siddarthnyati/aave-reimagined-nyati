@@ -1,26 +1,17 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  TrendingUp, 
-  PieChart,
-  CreditCard,
-  Coins,
-  Image,
-  Vault,
-  BarChart3
-} from 'lucide-react';
 
 const Header = () => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Markets', href: '/markets', icon: TrendingUp },
-    { name: 'Dashboard', href: '/dashboard', icon: PieChart },
-    { name: 'Borrow/Lend', href: '/borrow-lend', icon: BarChart3 },
-    { name: 'Credit Card', href: '/credit-card', icon: CreditCard },
-    { name: 'Staking', href: '/staking', icon: Coins },
-    { name: 'Venture Vaults', href: '/venture-vaults', icon: Vault },
-    { name: 'NFT Lending', href: '/nft-lending', icon: Image },
+    { name: 'Markets', href: '/markets' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Borrow/Lend', href: '/borrow-lend' },
+    { name: 'Credit Card', href: '/credit-card' },
+    { name: 'Staking', href: '/staking' },
+    { name: 'Venture Vaults', href: '/venture-vaults' },
+    { name: 'NFT Lending', href: '/nft-lending' },
   ];
 
   return (
@@ -38,21 +29,19 @@ const Header = () => {
 
           <nav className="flex items-center space-x-2">
             {navigation.map((item) => {
-              const Icon = item.icon;
               const isActive = location.pathname === item.href;
               
               return (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`crypto-pill group flex items-center gap-2 px-3 py-2.5 rounded-full text-sm font-medium transition-all duration-500 ${
+                  className={`crypto-pill group px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-500 ${
                     isActive
                       ? 'crypto-pill-active text-black font-semibold'
                       : 'text-muted-foreground hover:text-white'
                   }`}
                 >
-                  <Icon className="w-4 h-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
-                  <span className="hidden md:inline font-space-grotesk text-xs lg:text-sm">{item.name}</span>
+                  <span className="font-space-grotesk text-sm">{item.name}</span>
                 </Link>
               );
             })}
