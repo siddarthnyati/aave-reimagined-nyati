@@ -2,8 +2,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CryptoLending from '@/components/borrow/CryptoLending';
-import StockBorrowing from '@/components/borrow/StockBorrowing';
-import StockLending from '@/components/borrow/StockLending';
 import StockLoans from '@/components/borrow/StockLoans';
 import CryptoStockConnection from '@/components/borrow/CryptoStockConnection';
 import BrokerageConnection from '@/components/borrow/BrokerageConnection';
@@ -83,7 +81,7 @@ const BorrowLend = () => {
           previewContent={previewContent}
         >
           <Tabs defaultValue="crypto-lending" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-5 glass-card">
+            <TabsList className="grid w-full grid-cols-4 glass-card">
               <TabsTrigger value="crypto-lending" className="flex items-center gap-2">
                 <ContextualTooltip
                   title="Crypto Lending"
@@ -96,21 +94,17 @@ const BorrowLend = () => {
                   </div>
                 </ContextualTooltip>
               </TabsTrigger>
-              <TabsTrigger value="stock-borrow" className="flex items-center gap-2">
+              <TabsTrigger value="stock-loans" className="flex items-center gap-2">
                 <ContextualTooltip
-                  title="Stock Borrowing"
-                  content="Borrow against your stock portfolio without selling. Use stocks as collateral to access crypto liquidity for DeFi opportunities."
+                  title="Stock-Backed Loans"
+                  content="Borrow against your stock portfolio or lend to others using stocks as collateral. Access liquidity without selling your equity positions."
                   category="advanced"
                 >
                   <div className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4" />
-                    Stock Borrow
+                    Stock-Backed Loans
                   </div>
                 </ContextualTooltip>
-              </TabsTrigger>
-              <TabsTrigger value="stock-lending" className="flex items-center gap-2">
-                <Building2 className="w-4 h-4" />
-                Stock Lending
               </TabsTrigger>
               <TabsTrigger value="connections" className="flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
@@ -134,13 +128,8 @@ const BorrowLend = () => {
               <CryptoLending />
             </TabsContent>
 
-            <TabsContent value="stock-borrow" className="space-y-8">
-              <StockBorrowing />
+            <TabsContent value="stock-loans">
               <StockLoans />
-            </TabsContent>
-
-            <TabsContent value="stock-lending">
-              <StockLending />
             </TabsContent>
 
             <TabsContent value="connections" className="space-y-8">
