@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -22,6 +23,7 @@ export default {
 				inter: ['Inter', 'sans-serif'],
 				'space-grotesk': ['Space Grotesk', 'sans-serif'],
 				'outfit': ['Outfit', 'sans-serif'],
+				sans: ['Inter', 'sans-serif'], // Make Inter the default sans font
 			},
 			colors: {
 				border: 'hsl(var(--border))',

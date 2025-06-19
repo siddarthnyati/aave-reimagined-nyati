@@ -81,6 +81,18 @@ const AIStrategies = () => {
       sharpe: '1.9',
       maxDrawdown: '15.3%',
       color: 'bg-purple-50 border-purple-200'
+    },
+    {
+      id: 'defi-native',
+      name: 'DeFi Native',
+      description: 'Focus on native DeFi tokens with governance participation rewards',
+      allocation: { AAVE: 30, UNI: 25, COMP: 25, CRV: 20 },
+      apy: '10.8%',
+      risk: 'Medium-High',
+      performance: '+31.7%',
+      sharpe: '2.0',
+      maxDrawdown: '12.1%',
+      color: 'bg-orange-50 border-orange-200'
     }
   ];
 
@@ -146,7 +158,7 @@ const AIStrategies = () => {
           Automated portfolio management powered by advanced AI
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {strategies.map((strategy) => (
           <Card key={strategy.id} className="glass-card">
             <CardHeader>
@@ -204,7 +216,7 @@ const AIStrategies = () => {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800">
                 {activeStrategy ? 'Strategy Active' : 'No Active Strategy'}
               </Badge>
               {activeStrategy && (
@@ -218,19 +230,19 @@ const AIStrategies = () => {
           {/* Simulation Modal */}
           {showSimulation && selectedStrategy && (
             <Card className="mb-8 border-2 border-primary shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+              <CardHeader className="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="w-5 h-5" />
                   Strategy Simulation: {selectedStrategy.name}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-gray-300">
                   Projected impact on your portfolio with detailed analysis
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h4 className="font-semibold mb-3 text-gray-600">Current Portfolio</h4>
+                    <h4 className="font-semibold mb-3 text-gray-400">Current Portfolio</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Yield:</span>
@@ -257,11 +269,11 @@ const AIStrategies = () => {
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold mb-3 text-green-600">Projected Portfolio</h4>
+                    <h4 className="font-semibold mb-3 text-green-400">Projected Portfolio</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Yield:</span>
-                        <span className="font-medium text-green-600">{selectedStrategy.apy}</span>
+                        <span className="font-medium text-green-400">{selectedStrategy.apy}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Risk Level:</span>
@@ -269,7 +281,7 @@ const AIStrategies = () => {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Annual Earnings:</span>
-                        <span className="font-medium text-green-600">$12,180</span>
+                        <span className="font-medium text-green-400">$12,180</span>
                       </div>
                       {Object.entries(selectedStrategy.allocation).map(([asset, percentage]) => (
                         <div key={asset} className="space-y-1">
@@ -284,13 +296,13 @@ const AIStrategies = () => {
                   </div>
                 </div>
 
-                <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <div className="bg-gray-900 p-4 rounded-lg mb-4 border border-green-800">
                   <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-4 h-4 text-blue-600" />
-                    <span className="font-medium text-blue-800">Projected Impact</span>
+                    <TrendingUp className="w-4 h-4 text-green-400" />
+                    <span className="font-medium text-green-300">Projected Impact</span>
                   </div>
-                  <p className="text-sm text-blue-700">
-                    Expected increase of <strong>+$2,660 annual yield</strong> with managed risk exposure.
+                  <p className="text-sm text-gray-300">
+                    Expected increase of <strong className="text-green-400">+$2,660 annual yield</strong> with managed risk exposure.
                     Implementation will occur gradually over 3-5 days to minimize slippage and gas costs.
                   </p>
                 </div>
@@ -316,8 +328,8 @@ const AIStrategies = () => {
             </TabsList>
 
             <TabsContent value="strategies" className="space-y-6">
-              {/* Strategy Selection */}
-              <div className="grid grid-cols-1 gap-6">
+              {/* Strategy Selection - 2x2 Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {strategies.map((strategy) => (
                   <Card key={strategy.id} className={`glass-card transition-all hover:shadow-md ${activeStrategy === strategy.id ? 'ring-2 ring-primary' : ''}`}>
                     <CardContent className="p-6">
@@ -328,7 +340,7 @@ const AIStrategies = () => {
                             <Badge variant={strategy.risk === 'Low' ? 'secondary' : strategy.risk === 'Medium' ? 'default' : 'destructive'}>
                               {strategy.risk} Risk
                             </Badge>
-                            <Badge variant="outline" className="bg-green-50 text-green-700">
+                            <Badge variant="outline" className="bg-green-950 text-green-400 border-green-800">
                               {strategy.apy} APY
                             </Badge>
                           </div>
@@ -337,7 +349,7 @@ const AIStrategies = () => {
                           <div className="grid grid-cols-3 gap-4 text-sm mb-4">
                             <div>
                               <span className="text-muted-foreground">Performance</span>
-                              <div className="font-bold text-blue-600">{strategy.performance}</div>
+                              <div className="font-bold text-green-400">{strategy.performance}</div>
                             </div>
                             <div>
                               <span className="text-muted-foreground">Sharpe Ratio</span>
@@ -345,7 +357,7 @@ const AIStrategies = () => {
                             </div>
                             <div>
                               <span className="text-muted-foreground">Max Drawdown</span>
-                              <div className="font-bold text-red-600">{strategy.maxDrawdown}</div>
+                              <div className="font-bold text-red-400">{strategy.maxDrawdown}</div>
                             </div>
                           </div>
 
@@ -396,34 +408,34 @@ const AIStrategies = () => {
 
             <TabsContent value="automation" className="space-y-6">
               <div className="mb-6">
-                <Card className="glass-card bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+                <Card className="glass-card bg-gradient-to-r from-gray-900 to-gray-800 border-green-800">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-3">
-                      <Activity className="w-6 h-6 text-purple-600" />
-                      <h3 className="text-lg font-semibold">AI Automation Status</h3>
+                      <Activity className="w-6 h-6 text-green-400" />
+                      <h3 className="text-lg font-semibold text-white">AI Automation Status</h3>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <p className="text-sm text-gray-300 mb-4">
                       Your AI assistant is actively managing your portfolio with real-time optimizations and risk monitoring.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div className="text-center">
-                        <div className="font-bold text-2xl text-green-600">$4,230</div>
-                        <div className="text-mute-foreground">Total AI Savings</div>
+                        <div className="font-bold text-2xl text-green-400">$4,230</div>
+                        <div className="text-gray-400">Total AI Savings</div>
                       </div>
                       <div className="text-center">
-                        <div className="font-bold text-2xl text-blue-600">24/7</div>
-                        <div className="text-muted-foreground">Active Monitoring</div>
+                        <div className="font-bold text-2xl text-blue-400">24/7</div>
+                        <div className="text-gray-400">Active Monitoring</div>
                       </div>
                       <div className="text-center">
-                        <div className="font-bold text-2xl text-purple-600">156</div>
-                        <div className="text-muted-foreground">Optimizations Made</div>
+                        <div className="font-bold text-2xl text-purple-400">156</div>
+                        <div className="text-gray-400">Optimizations Made</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {automationFeatures.map((feature, index) => (
                   <Card key={index} className="glass-card">
                     <CardContent className="p-6">
@@ -437,18 +449,18 @@ const AIStrategies = () => {
                           </div>
                           <p className="text-muted-foreground mb-3">{feature.description}</p>
                           
-                          <div className="bg-blue-50 p-3 rounded-lg mb-4">
+                          <div className="bg-gray-900 p-3 rounded-lg mb-4 border border-gray-700">
                             <div className="flex items-center gap-2 mb-1">
-                              <Bot className="w-4 h-4 text-blue-600" />
-                              <span className="text-sm font-medium text-blue-800">AI Analysis</span>
+                              <Bot className="w-4 h-4 text-green-400" />
+                              <span className="text-sm font-medium text-green-300">AI Analysis</span>
                             </div>
-                            <p className="text-xs text-blue-700">{feature.aiSummary}</p>
+                            <p className="text-xs text-gray-300">{feature.aiSummary}</p>
                           </div>
                           
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
                               <span className="text-muted-foreground">Impact:</span>
-                              <div className={`font-medium ${feature.savings.includes('+') ? 'text-green-600' : feature.savings.includes('-') ? 'text-blue-600' : 'text-orange-600'}`}>
+                              <div className={`font-medium ${feature.savings.includes('+') ? 'text-green-400' : feature.savings.includes('-') ? 'text-blue-400' : 'text-orange-400'}`}>
                                 {feature.savings}
                               </div>
                             </div>
@@ -475,13 +487,13 @@ const AIStrategies = () => {
 
             <TabsContent value="advanced" className="space-y-6">
               <div className="mb-6">
-                <Card className="glass-card border-orange-200 bg-orange-50">
+                <Card className="glass-card border-orange-200 bg-gradient-to-r from-orange-950 to-red-950 border-orange-800">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className="w-5 h-5 text-orange-600" />
-                      <span className="font-medium text-orange-800">Advanced User Settings</span>
+                      <AlertTriangle className="w-5 h-5 text-orange-400" />
+                      <span className="font-medium text-orange-300">Advanced User Settings</span>
                     </div>
-                    <p className="text-sm text-orange-700 mt-1">
+                    <p className="text-sm text-orange-200 mt-1">
                       These settings are for experienced users only. Changes may affect strategy performance.
                     </p>
                   </CardContent>
