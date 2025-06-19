@@ -1,10 +1,15 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { useWallet } from '@/contexts/WalletContext';
+import { useLearnMode } from '@/contexts/LearnModeContext';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import WalletConnection from './WalletConnection';
+import { GraduationCap } from 'lucide-react';
 
 const Header = () => {
   const location = useLocation();
+  const { isLearnMode, toggleLearnMode } = useLearnMode();
 
   const navigation = [
     { name: 'Markets', href: '/markets' },
@@ -51,7 +56,26 @@ const Header = () => {
           </nav>
         </div>
 
-        <WalletConnection />
+        <div className="flex items-center gap-4">
+          <Button
+            variant={isLearnMode ? "default" : "outline"}
+            onClick={toggleLearnMode}
+            className="flex items-center gap-2"
+          >
+            <GraduationCap className="w-4 h-4" />
+            {isLearnMode ? (
+              <>
+                Learn Mode
+                <Badge variant="secondary" className="ml-1 bg-green-500/20 text-green-600">
+                  ON
+                </Badge>
+              </>
+            ) : (
+              'Learn Mode'
+            )}
+          </Button>
+          <WalletConnection />
+        </div>
       </div>
     </header>
   );

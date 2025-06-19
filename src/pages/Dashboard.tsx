@@ -10,6 +10,9 @@ import RewardsSection from '@/components/dashboard/RewardsSection';
 import PortfolioAnalytics from '@/components/dashboard/PortfolioAnalytics';
 import WalletGuard from '@/components/auth/WalletGuard';
 import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
+import LearnModeBanner from '@/components/learn/LearnModeBanner';
+import TourGuide from '@/components/learn/TourGuide';
+import AILendingAssistant from '@/components/ai/AILendingAssistant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, DollarSign, PieChart, BarChart3, Shield } from 'lucide-react';
@@ -94,6 +97,9 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
+        <LearnModeBanner />
+        <TourGuide />
+        
         <WalletGuard 
           title="Connect Wallet to View Dashboard"
           description="Access your complete portfolio overview and manage all your DeFi positions in one place."
@@ -135,14 +141,20 @@ const Dashboard = () => {
                 <WalletOverview />
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <SupplySection />
-                <BorrowSection />
+                <div data-tour="supply-section">
+                  <SupplySection />
+                </div>
+                <div data-tour="borrow-section">
+                  <BorrowSection />
+                </div>
               </div>
               <TransactionHistory />
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-8">
-              <PortfolioAnalytics />
+              <div data-tour="health-factor">
+                <PortfolioAnalytics />
+              </div>
             </TabsContent>
 
             <TabsContent value="portfolio" className="space-y-8">
@@ -164,6 +176,7 @@ const Dashboard = () => {
         </WalletGuard>
       </main>
       <Footer />
+      <AILendingAssistant />
     </div>
   );
 };
