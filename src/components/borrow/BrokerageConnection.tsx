@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Shield, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface BrokerageConnectionProps {
-  onConnect: (brokerage: string) => void;
+  onConnect?: (brokerage: string) => void;
 }
 
 const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
@@ -58,7 +59,9 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     setConnecting(null);
-    onConnect(brokerage);
+    if (onConnect) {
+      onConnect(brokerage);
+    }
   };
 
   return (

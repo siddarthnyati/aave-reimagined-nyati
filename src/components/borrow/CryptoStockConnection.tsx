@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Shield, CheckCircle, AlertCircle, Info } from 'lucide-react';
 
 interface CryptoStockConnectionProps {
-  onConnect: (platform: string) => void;
+  onConnect?: (platform: string) => void;
 }
 
 const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
@@ -47,7 +47,9 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     setConnecting(null);
-    onConnect(platform);
+    if (onConnect) {
+      onConnect(platform);
+    }
   };
 
   return (
