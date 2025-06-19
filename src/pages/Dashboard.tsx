@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WalletOverview from '@/components/dashboard/WalletOverview';
@@ -7,13 +8,11 @@ import TransactionHistory from '@/components/dashboard/TransactionHistory';
 import GovernanceSection from '@/components/dashboard/GovernanceSection';
 import RewardsSection from '@/components/dashboard/RewardsSection';
 import PortfolioAnalytics from '@/components/dashboard/PortfolioAnalytics';
-import AIStrategiesSection from '@/components/dashboard/AIStrategiesSection';
 import WalletGuard from '@/components/auth/WalletGuard';
 import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
-import AILendingAssistant from '@/components/ai/AILendingAssistant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, DollarSign, PieChart, BarChart3, Shield, Bot } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, BarChart3, Shield } from 'lucide-react';
 import { getUserTrustGraphData } from '@/lib/trustgraph';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -31,11 +30,6 @@ const Dashboard = () => {
 
   const handleTrustGraphClick = () => {
     navigate('/dashboard?tab=analytics&focus=trustgraph');
-  };
-
-  const handleAIAction = (action: string, params: any) => {
-    console.log('AI Action triggered:', action, params);
-    // Handle AI assistant actions here
   };
 
   const previewContent = (
@@ -128,12 +122,8 @@ const Dashboard = () => {
           </div>
 
           <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="ai-strategies" data-tour="ai-strategies-tab">
-                <Bot className="w-4 h-4 mr-1" />
-                AI Strategies
-              </TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
               <TabsTrigger value="governance">Governance</TabsTrigger>
@@ -149,12 +139,6 @@ const Dashboard = () => {
                 <BorrowSection />
               </div>
               <TransactionHistory />
-            </TabsContent>
-
-            <TabsContent value="ai-strategies" className="space-y-8">
-              <div data-tour="rebalancing-section">
-                <AIStrategiesSection />
-              </div>
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-8">
@@ -180,11 +164,6 @@ const Dashboard = () => {
         </WalletGuard>
       </main>
       <Footer />
-      
-      {/* AI Assistant - Available on all pages */}
-      <div data-tour="ai-assistant">
-        <AILendingAssistant onActionSuggestion={handleAIAction} />
-      </div>
     </div>
   );
 };

@@ -10,7 +10,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Markets from "./pages/Markets";
 import CreditCard from "./pages/CreditCard";
-import Staking from "./pages/Staking";
+import AIStrategies from "./pages/AIStrategies";
 import NFTLending from "./pages/NFTLending";
 import VentureVaults from "./pages/VentureVaults";
 import BorrowLend from "./pages/BorrowLend";
@@ -31,7 +31,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/markets" element={<Markets />} />
             <Route path="/credit-card" element={<CreditCard />} />
-            <Route path="/staking" element={<Staking />} />
+            <Route path="/ai-strategies" element={<AIStrategies />} />
             <Route path="/nft-lending" element={<NFTLending />} />
             <Route path="/venture-vaults" element={<VentureVaults />} />
             <Route path="/borrow-lend" element={<BorrowLend />} />

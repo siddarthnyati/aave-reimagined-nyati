@@ -11,7 +11,7 @@ const Header = () => {
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Borrow/Lend', href: '/borrow-lend' },
     { name: 'Credit Card', href: '/credit-card' },
-    { name: 'Staking', href: '/staking' },
+    { name: 'AI Strategies', href: '/ai-strategies' },
     { name: 'Venture Vaults', href: '/venture-vaults' },
     { name: 'NFT Lending', href: '/nft-lending' },
     { name: 'Community Contest', href: '/community-contest' },
