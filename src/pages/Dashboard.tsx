@@ -1,95 +1,31 @@
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import WalletGuard from '@/components/auth/WalletGuard';
 import WalletOverview from '@/components/dashboard/WalletOverview';
 import SupplySection from '@/components/dashboard/SupplySection';
 import BorrowSection from '@/components/dashboard/BorrowSection';
 import TransactionHistory from '@/components/dashboard/TransactionHistory';
-import GovernanceSection from '@/components/dashboard/GovernanceSection';
 import RewardsSection from '@/components/dashboard/RewardsSection';
+import GovernanceSection from '@/components/dashboard/GovernanceSection';
 import PortfolioAnalytics from '@/components/dashboard/PortfolioAnalytics';
-import WalletGuard from '@/components/auth/WalletGuard';
-import TrustGraphScore from '@/components/trustgraph/TrustGraphScore';
+import AIStrategiesSection from '@/components/dashboard/AIStrategiesSection';
 import LearnModeBanner from '@/components/learn/LearnModeBanner';
-import TourGuide from '@/components/learn/TourGuide';
+import DashboardTourGuide from '@/components/learn/DashboardTourGuide';
+import ContextualTooltip from '@/components/learn/ContextualTooltip';
 import AILendingAssistant from '@/components/ai/AILendingAssistant';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, DollarSign, PieChart, BarChart3, Shield } from 'lucide-react';
-import { getUserTrustGraphData } from '@/lib/trustgraph';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLearnMode } from '@/contexts/LearnModeContext';
+import { GraduationCap, Wallet, TrendingUp, History, Gift, Vote, BarChart3, Zap } from 'lucide-react';
 
 const Dashboard = () => {
-  const trustGraphData = getUserTrustGraphData();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  
-  // Get tab from URL params, default to 'overview'
-  const currentTab = searchParams.get('tab') || 'overview';
-
-  const handleTabChange = (value: string) => {
-    navigate(`/dashboard?tab=${value}`, { replace: true });
-  };
-
-  const handleTrustGraphClick = () => {
-    navigate('/dashboard?tab=analytics&focus=trustgraph');
-  };
+  const { isLearnMode, toggleLearnMode } = useLearnMode();
 
   const previewContent = (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">
-          <span className="gradient-text">Dashboard</span>
-        </h1>
-        <p className="text-muted-foreground">
-          Manage your portfolio and track your DeFi activities
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" data-tour="portfolio-cards">
-        <Card className="glass-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              Net Worth
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-primary">$142,340</p>
-            <p className="text-sm text-muted-foreground">+$2,850 (2.04%)</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Portfolio</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">$89,200</p>
-            <p className="text-sm text-green-500">+5.2%</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Active Loans</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">$35,600</p>
-            <p className="text-sm text-orange-500">3 positions</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">TrustGraph Score</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold text-green-600">{trustGraphData.score}</p>
-            <p className="text-sm text-muted-foreground">{trustGraphData.grade} - {trustGraphData.tier}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <WalletOverview />
     </div>
   );
 
@@ -98,79 +34,144 @@ const Dashboard = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <LearnModeBanner />
-        <TourGuide />
+        <DashboardTourGuide />
         
         <WalletGuard 
           title="Connect Wallet to View Dashboard"
-          description="Access your complete portfolio overview and manage all your DeFi positions in one place."
+          description="Access your complete DeFi portfolio, lending positions, and rewards in one unified dashboard."
           features={[
-            "View complete portfolio analytics",
-            "Track all lending and borrowing positions", 
-            "Monitor real-time yields and returns",
-            "Access transaction history and reports"
+            "Track your complete DeFi portfolio value",
+            "Monitor all lending and borrowing positions", 
+            "View transaction history and performance analytics",
+            "Access AI-powered strategy recommendations"
           ]}
           showPreview={true}
           previewContent={previewContent}
         >
           <div className="mb-8 flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold mb-2">
-                <span className="gradient-text">Dashboard</span>
-              </h1>
+              <ContextualTooltip
+                title="Your DeFi Command Center"
+                content="This dashboard gives you a complete view of your decentralized finance portfolio. Like a traditional investment account, but for crypto lending, borrowing, and yield farming."
+                category="basics"
+              >
+                <h1 className="text-4xl font-bold mb-2">
+                  <span className="gradient-text">Dashboard</span>
+                </h1>
+              </ContextualTooltip>
               <p className="text-muted-foreground">
-                Manage your portfolio and track your DeFi activities
+                Your complete DeFi portfolio and activity center
               </p>
             </div>
-            <TrustGraphScore 
-              score={trustGraphData.score} 
-              onClick={handleTrustGraphClick}
-            />
+            
+            <Button
+              variant={isLearnMode ? "default" : "outline"}
+              onClick={toggleLearnMode}
+              className="flex items-center gap-2"
+            >
+              <GraduationCap className="w-4 h-4" />
+              {isLearnMode ? (
+                <>
+                  Learn Mode
+                  <Badge variant="secondary" className="ml-1 bg-green-500/20 text-green-600">
+                    ON
+                  </Badge>
+                </>
+              ) : (
+                'Learn Mode'
+              )}
+            </Button>
           </div>
 
-          <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-              <TabsTrigger value="governance">Governance</TabsTrigger>
-              <TabsTrigger value="rewards">Rewards</TabsTrigger>
+          <div data-tour="portfolio-overview" className="mb-8">
+            <WalletOverview />
+          </div>
+
+          <Tabs defaultValue="positions" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 glass-card">
+              <TabsTrigger value="positions" className="flex items-center gap-2">
+                <Wallet className="w-4 h-4" />
+                <span className="hidden sm:inline">Positions</span>
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Analytics</span>
+              </TabsTrigger>
+              <TabsTrigger value="history" className="flex items-center gap-2">
+                <History className="w-4 h-4" />
+                <span className="hidden sm:inline">History</span>
+              </TabsTrigger>
+              <TabsTrigger value="rewards" className="flex items-center gap-2">
+                <Gift className="w-4 h-4" />
+                <span className="hidden sm:inline">Rewards</span>
+              </TabsTrigger>
+              <TabsTrigger value="governance" className="flex items-center gap-2">
+                <Vote className="w-4 h-4" />
+                <span className="hidden sm:inline">Governance</span>
+              </TabsTrigger>
+              <TabsTrigger value="strategies" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                <span className="hidden sm:inline">AI Strategies</span>
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-8">
-              <div data-tour="portfolio-cards">
-                <WalletOverview />
-              </div>
+            <TabsContent value="positions" className="space-y-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div data-tour="supply-section">
-                  <SupplySection />
+                  <ContextualTooltip
+                    title="Supply Positions"
+                    content="Your supplied assets earn interest and can be used as collateral. Think of this like a high-yield savings account that also enables borrowing."
+                    category="basics"
+                  >
+                    <SupplySection />
+                  </ContextualTooltip>
                 </div>
                 <div data-tour="borrow-section">
-                  <BorrowSection />
+                  <ContextualTooltip
+                    title="Borrow Positions"
+                    content="Your borrowed positions show what you owe and the interest rates. Use borrowed funds for leverage, arbitrage, or accessing liquidity without selling assets."
+                    category="advanced"
+                  >
+                    <BorrowSection />
+                  </ContextualTooltip>
                 </div>
               </div>
-              <TransactionHistory />
             </TabsContent>
 
-            <TabsContent value="analytics" className="space-y-8">
-              <div data-tour="health-factor">
-                <PortfolioAnalytics />
+            <TabsContent value="analytics">
+              <div data-tour="portfolio-analytics">
+                <ContextualTooltip
+                  title="Portfolio Analytics"
+                  content="Deep dive into your DeFi portfolio performance with advanced metrics, risk analysis, and historical trends."
+                  category="advanced"
+                >
+                  <PortfolioAnalytics />
+                </ContextualTooltip>
               </div>
             </TabsContent>
 
-            <TabsContent value="portfolio" className="space-y-8">
-              <WalletOverview />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <SupplySection />
-                <BorrowSection />
+            <TabsContent value="history">
+              <div data-tour="transaction-history">
+                <ContextualTooltip
+                  title="Transaction History"
+                  content="Complete record of all your DeFi transactions including supply, borrow, repay, and withdraw actions across all protocols."
+                  category="basics"
+                >
+                  <TransactionHistory />
+                </ContextualTooltip>
               </div>
             </TabsContent>
 
-            <TabsContent value="governance" className="space-y-8">
+            <TabsContent value="rewards">
+              <RewardsSection />
+            </TabsContent>
+
+            <TabsContent value="governance">
               <GovernanceSection />
             </TabsContent>
 
-            <TabsContent value="rewards" className="space-y-8">
-              <RewardsSection />
+            <TabsContent value="strategies">
+              <AIStrategiesSection />
             </TabsContent>
           </Tabs>
         </WalletGuard>
