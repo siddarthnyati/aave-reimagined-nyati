@@ -7,7 +7,8 @@ const RecentRewardsFeed = () => {
     {
       id: 1,
       source: 'Coinbase Card',
-      logo: '🟦',
+      logo: 'CB',
+      logoColor: 'bg-blue-600 text-white',
       amount: '$12.45',
       token: 'BTC',
       rawAmount: '0.0003 BTC',
@@ -17,7 +18,8 @@ const RecentRewardsFeed = () => {
     {
       id: 2,
       source: 'Crypto.com Card',
-      logo: '🔵',
+      logo: 'CDC',
+      logoColor: 'bg-indigo-600 text-white',
       amount: '$8.21',
       token: 'CRO',
       rawAmount: '156 CRO',
@@ -27,7 +29,8 @@ const RecentRewardsFeed = () => {
     {
       id: 3,
       source: 'Binance Card',
-      logo: '🟡',
+      logo: 'BNB',
+      logoColor: 'bg-yellow-500 text-black',
       amount: '$15.67',
       token: 'BNB',
       rawAmount: '0.045 BNB',
@@ -37,7 +40,8 @@ const RecentRewardsFeed = () => {
     {
       id: 4,
       source: 'Coinbase Card',
-      logo: '🟦',
+      logo: 'CB',
+      logoColor: 'bg-blue-600 text-white',
       amount: '$6.32',
       token: 'BTC',
       rawAmount: '0.00018 BTC',
@@ -47,7 +51,8 @@ const RecentRewardsFeed = () => {
     {
       id: 5,
       source: 'Crypto.com Card',
-      logo: '🔵',
+      logo: 'CDC',
+      logoColor: 'bg-indigo-600 text-white',
       amount: '$22.11',
       token: 'CRO',
       rawAmount: '420 CRO',
@@ -61,7 +66,9 @@ const RecentRewardsFeed = () => {
       {recentRewards.map((reward) => (
         <div key={reward.id} className="flex items-center justify-between p-3 rounded-lg bg-background/30 border border-border/30 hover:bg-background/50 transition-colors">
           <div className="flex items-center gap-3">
-            <div className="text-lg">{reward.logo}</div>
+            <div className={`w-8 h-8 rounded-full ${reward.logoColor} flex items-center justify-center text-xs font-bold`}>
+              {reward.logo}
+            </div>
             <div>
               <p className="font-medium text-sm">{reward.source}</p>
               <p className="text-xs text-muted-foreground flex items-center gap-1">

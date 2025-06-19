@@ -15,7 +15,10 @@ const AaveRecommendations = () => {
       risk: 'Low',
       potential: '$6.01/year',
       icon: '₿',
-      color: 'text-orange-400'
+      color: 'text-orange-400',
+      source: 'CB',
+      sourceColor: 'bg-blue-600 text-white',
+      sourcePlatform: 'Coinbase Card'
     },
     {
       token: 'CRO',
@@ -26,7 +29,10 @@ const AaveRecommendations = () => {
       risk: 'Low',
       potential: '$4.17/year',
       icon: '💎',
-      color: 'text-blue-400'
+      color: 'text-blue-400',
+      source: 'CDC',
+      sourceColor: 'bg-indigo-600 text-white',
+      sourcePlatform: 'Crypto.com Card'
     },
     {
       token: 'BNB',
@@ -37,7 +43,10 @@ const AaveRecommendations = () => {
       risk: 'Medium',
       potential: '$2.22/year',
       icon: '🟡',
-      color: 'text-yellow-400'
+      color: 'text-yellow-400',
+      source: 'BNB',
+      sourceColor: 'bg-yellow-500 text-black',
+      sourcePlatform: 'Binance Card'
     }
   ];
 
@@ -59,8 +68,14 @@ const AaveRecommendations = () => {
               <div className="flex items-center gap-3">
                 <div className={`text-2xl ${rec.color}`}>{rec.icon}</div>
                 <div>
-                  <h4 className="font-semibold">{rec.amount} <span className="text-sm text-muted-foreground">({rec.rawAmount})</span></h4>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-semibold">{rec.amount} <span className="text-sm text-muted-foreground">({rec.rawAmount})</span></h4>
+                    <div className={`w-6 h-6 rounded ${rec.sourceColor} flex items-center justify-center text-xs font-bold`} title={`Source: ${rec.sourcePlatform}`}>
+                      {rec.source}
+                    </div>
+                  </div>
                   <p className="text-sm text-muted-foreground">{rec.strategy}</p>
+                  <p className="text-xs text-muted-foreground">Source: {rec.sourcePlatform}</p>
                 </div>
               </div>
               <div className="text-right">

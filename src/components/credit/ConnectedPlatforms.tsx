@@ -8,7 +8,8 @@ const ConnectedPlatforms = () => {
   const platforms = [
     {
       name: 'Coinbase Card',
-      logo: '🟦', // Using emoji as placeholder
+      logo: 'CB',
+      logoColor: 'bg-blue-600 text-white',
       connected: true,
       balance: '$142.85',
       token: 'BTC',
@@ -16,7 +17,8 @@ const ConnectedPlatforms = () => {
     },
     {
       name: 'Crypto.com Card',
-      logo: '🔵',
+      logo: 'CDC',
+      logoColor: 'bg-indigo-600 text-white',
       connected: true,
       balance: '$67.23',
       token: 'CRO',
@@ -24,7 +26,8 @@ const ConnectedPlatforms = () => {
     },
     {
       name: 'Binance Card',
-      logo: '🟡',
+      logo: 'BNB',
+      logoColor: 'bg-yellow-500 text-black',
       connected: true,
       balance: '$27.44',
       token: 'BNB',
@@ -32,7 +35,8 @@ const ConnectedPlatforms = () => {
     },
     {
       name: 'BlockFi Card',
-      logo: '⚪',
+      logo: 'BFI',
+      logoColor: 'bg-gray-500 text-white',
       connected: false,
       balance: '-',
       token: 'BTC',
@@ -47,7 +51,9 @@ const ConnectedPlatforms = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="text-2xl">{platform.logo}</div>
+                <div className={`w-10 h-10 rounded-lg ${platform.logoColor} flex items-center justify-center text-sm font-bold`}>
+                  {platform.logo}
+                </div>
                 <div>
                   <h4 className="font-medium">{platform.name}</h4>
                   <p className="text-sm text-muted-foreground">Last sync: {platform.lastSync}</p>
