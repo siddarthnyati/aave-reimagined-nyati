@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WalletGuard from '@/components/auth/WalletGuard';
@@ -9,7 +8,6 @@ import TransactionHistory from '@/components/dashboard/TransactionHistory';
 import RewardsSection from '@/components/dashboard/RewardsSection';
 import GovernanceSection from '@/components/dashboard/GovernanceSection';
 import PortfolioAnalytics from '@/components/dashboard/PortfolioAnalytics';
-import AIStrategiesSection from '@/components/dashboard/AIStrategiesSection';
 import LearnModeBanner from '@/components/learn/LearnModeBanner';
 import DashboardTourGuide from '@/components/learn/DashboardTourGuide';
 import ContextualTooltip from '@/components/learn/ContextualTooltip';
@@ -18,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLearnMode } from '@/contexts/LearnModeContext';
-import { GraduationCap, Wallet, TrendingUp, History, Gift, Vote, BarChart3, Zap } from 'lucide-react';
+import { GraduationCap, Wallet, TrendingUp, History, Gift, Vote, BarChart3 } from 'lucide-react';
 
 const Dashboard = () => {
   const { isLearnMode, toggleLearnMode } = useLearnMode();
@@ -88,7 +86,7 @@ const Dashboard = () => {
           </div>
 
           <Tabs defaultValue="positions" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 glass-card">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-6 glass-card">
               <TabsTrigger value="positions" className="flex items-center gap-2">
                 <Wallet className="w-4 h-4" />
                 <span className="hidden sm:inline">Positions</span>
@@ -108,10 +106,6 @@ const Dashboard = () => {
               <TabsTrigger value="governance" className="flex items-center gap-2">
                 <Vote className="w-4 h-4" />
                 <span className="hidden sm:inline">Governance</span>
-              </TabsTrigger>
-              <TabsTrigger value="strategies" className="flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline">AI Strategies</span>
               </TabsTrigger>
             </TabsList>
 
@@ -168,10 +162,6 @@ const Dashboard = () => {
 
             <TabsContent value="governance">
               <GovernanceSection />
-            </TabsContent>
-
-            <TabsContent value="strategies">
-              <AIStrategiesSection />
             </TabsContent>
           </Tabs>
         </WalletGuard>
