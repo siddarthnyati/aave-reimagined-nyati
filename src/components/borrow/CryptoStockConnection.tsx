@@ -56,8 +56,8 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
     <div className="space-y-8">
       {/* Hero Section */}
       <div className="text-center py-8">
-        <h2 className="text-3xl font-bold mb-4">Connect Your Crypto Platform</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold mb-4 font-outfit">Connect Your Crypto Platform</h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-space-grotesk">
           Connect your tokenized stock portfolio to unlock liquidity. Wrapped stocks offer 24/7 trading 
           and instant settlement while maintaining exposure to traditional markets.
         </p>
@@ -69,8 +69,8 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
           <div className="flex items-center gap-4 mb-4">
             <Info className="w-8 h-8 text-blue-500 flex-shrink-0" />
             <div>
-              <h3 className="font-semibold">What are Wrapped Stocks?</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-semibold font-outfit">What are Wrapped Stocks?</h3>
+              <p className="text-sm text-muted-foreground font-space-grotesk">
                 Tokenized versions of traditional stocks that trade on crypto platforms. 
                 They track the price of the underlying stock 1:1 and offer crypto-native benefits.
               </p>
@@ -85,8 +85,8 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
           <div className="flex items-center justify-center gap-4 text-center">
             <Shield className="w-8 h-8 text-green-500" />
             <div>
-              <h3 className="font-semibold">Enterprise Security</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-semibold font-outfit">Enterprise Security</h3>
+              <p className="text-sm text-muted-foreground font-space-grotesk">
                 256-bit encryption • Cold storage • Multi-sig protection
               </p>
             </div>
@@ -105,18 +105,18 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
                   {platform.logo}
                 </div>
                 <div>
-                  <CardTitle className="text-xl">{platform.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{platform.users}</p>
+                  <CardTitle className="text-xl font-outfit">{platform.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground font-space-grotesk">{platform.users}</p>
                 </div>
               </div>
-              <CardDescription>{platform.description}</CardDescription>
+              <CardDescription className="font-space-grotesk">{platform.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h4 className="font-semibold text-sm mb-2">Key Features:</h4>
+                <h4 className="font-semibold text-sm mb-2 font-outfit">Key Features:</h4>
                 <div className="grid grid-cols-2 gap-2">
                   {platform.features.map((feature, index) => (
-                    <div key={index} className="flex items-center text-xs text-muted-foreground">
+                    <div key={index} className="flex items-center text-xs text-muted-foreground font-space-grotesk">
                       <CheckCircle className="w-3 h-3 mr-1 text-green-500" />
                       {feature}
                     </div>
@@ -124,7 +124,7 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
                 </div>
               </div>
               <Button 
-                className="w-full btn-primary"
+                className="w-full btn-primary font-space-grotesk"
                 onClick={() => handleConnect(platform.name)}
                 disabled={connecting !== null}
               >
@@ -149,8 +149,8 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
             <div className="w-12 h-12 mx-auto mb-4 bg-blue-100 rounded-lg flex items-center justify-center">
               <Shield className="w-6 h-6 text-blue-600" />
             </div>
-            <h3 className="font-semibold mb-2">Always On Trading</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold mb-2 font-outfit">Always On Trading</h3>
+            <p className="text-sm text-muted-foreground font-space-grotesk">
               Trade and manage positions 24/7, even when traditional markets are closed
             </p>
           </CardContent>
@@ -161,8 +161,8 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
             <div className="w-12 h-12 mx-auto mb-4 bg-green-100 rounded-lg flex items-center justify-center">
               <CheckCircle className="w-6 h-6 text-green-600" />
             </div>
-            <h3 className="font-semibold mb-2">Instant Settlement</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold mb-2 font-outfit">Instant Settlement</h3>
+            <p className="text-sm text-muted-foreground font-space-grotesk">
               No T+2 waiting period - trades settle instantly on blockchain
             </p>
           </CardContent>
@@ -173,8 +173,8 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
             <div className="w-12 h-12 mx-auto mb-4 bg-purple-100 rounded-lg flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-purple-600" />
             </div>
-            <h3 className="font-semibold mb-2">DeFi Integration</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold mb-2 font-outfit">DeFi Integration</h3>
+            <p className="text-sm text-muted-foreground font-space-grotesk">
               Native compatibility with DeFi protocols and smart contracts
             </p>
           </CardContent>

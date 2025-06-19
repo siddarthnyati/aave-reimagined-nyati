@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HelpCircle, X, Lightbulb } from 'lucide-react';
+import { useLearnMode } from '@/contexts/LearnModeContext';
 
 interface ContextualTooltipProps {
   title: string;
@@ -21,6 +22,7 @@ const ContextualTooltip = ({
   position = 'top' 
 }: ContextualTooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const { isLearnMode } = useLearnMode();
 
   const getCategoryColor = (cat: string) => {
     switch (cat) {
@@ -39,15 +41,22 @@ const ContextualTooltip = ({
     right: 'left-full top-1/2 transform -translate-y-1/2 ml-2'
   };
 
+  // Only show question marks when Learn Mode is active
+  if (!isLearnMode) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="relative inline-block">
-      <div 
-        className="relative cursor-help"
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-      >
+      <div className="flex items-center gap-2">
         {children}
-        <HelpCircle className="w-4 h-4 text-muted-foreground hover:text-primary absolute -top-1 -right-1 transition-colors" />
+        <div 
+          className="relative cursor-help"
+          onMouseEnter={() => setIsVisible(true)}
+          onMouseLeave={() => setIsVisible(false)}
+        >
+          <HelpCircle className="w-4 h-4 text-muted-foreground hover:text-primary transition-colors flex-shrink-0" />
+        </div>
       </div>
       
       {isVisible && (

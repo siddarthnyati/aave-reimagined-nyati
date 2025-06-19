@@ -68,8 +68,8 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
     <div className="space-y-8">
       {/* Hero Section */}
       <div className="text-center py-8">
-        <h2 className="text-3xl font-bold mb-4">Connect Your Brokerage</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold mb-4 font-outfit">Connect Your Brokerage</h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-space-grotesk">
           Connect your stock portfolio to unlock liquidity through our secure lending platform. 
           Borrow against your equity holdings while maintaining ownership.
         </p>
@@ -81,8 +81,8 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
           <div className="flex items-center justify-center gap-4 text-center">
             <Shield className="w-8 h-8 text-green-500" />
             <div>
-              <h3 className="font-semibold">Bank-Level Security</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-semibold font-outfit">Bank-Level Security</h3>
+              <p className="text-sm text-muted-foreground font-space-grotesk">
                 256-bit encryption • Read-only access • No trading permissions
               </p>
             </div>
@@ -101,15 +101,15 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
                   {brokerage.logo}
                 </div>
                 <div>
-                  <CardTitle className="text-xl">{brokerage.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{brokerage.users}</p>
+                  <CardTitle className="text-xl font-outfit">{brokerage.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground font-space-grotesk">{brokerage.users}</p>
                 </div>
               </div>
-              <CardDescription>{brokerage.description}</CardDescription>
+              <CardDescription className="font-space-grotesk">{brokerage.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <Button 
-                className="w-full btn-primary"
+                className="w-full btn-primary font-space-grotesk"
                 onClick={() => handleConnect(brokerage.name)}
                 disabled={connecting !== null}
               >
@@ -134,8 +134,8 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
             <div className="w-12 h-12 mx-auto mb-4 bg-blue-100 rounded-lg flex items-center justify-center">
               <Shield className="w-6 h-6 text-blue-600" />
             </div>
-            <h3 className="font-semibold mb-2">Keep Your Stocks</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold mb-2 font-outfit">Keep Your Stocks</h3>
+            <p className="text-sm text-muted-foreground font-space-grotesk">
               Maintain ownership and voting rights while accessing liquidity
             </p>
           </CardContent>
@@ -146,8 +146,8 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
             <div className="w-12 h-12 mx-auto mb-4 bg-green-100 rounded-lg flex items-center justify-center">
               <CheckCircle className="w-6 h-6 text-green-600" />
             </div>
-            <h3 className="font-semibold mb-2">Competitive Rates</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold mb-2 font-outfit">Competitive Rates</h3>
+            <p className="text-sm text-muted-foreground font-space-grotesk">
               Get up to 80% LTV on blue-chip stocks and ETFs
             </p>
           </CardContent>
@@ -158,8 +158,8 @@ const BrokerageConnection = ({ onConnect }: BrokerageConnectionProps) => {
             <div className="w-12 h-12 mx-auto mb-4 bg-purple-100 rounded-lg flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-purple-600" />
             </div>
-            <h3 className="font-semibold mb-2">Smart Monitoring</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-semibold mb-2 font-outfit">Smart Monitoring</h3>
+            <p className="text-sm text-muted-foreground font-space-grotesk">
               Real-time risk assessment and margin call protection
             </p>
           </CardContent>

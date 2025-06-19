@@ -36,7 +36,7 @@ const CommunityContest = () => {
       prize: '1000 USDC',
       status: 'active' as const,
       creator: '0x1234...5678',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=400&h=300&fit=crop'
     },
     {
       id: 2,
@@ -49,7 +49,7 @@ const CommunityContest = () => {
       prize: '2500 USDC',
       status: 'active' as const,
       creator: '0xabcd...efgh',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&h=300&fit=crop'
     },
     {
       id: 3,
@@ -62,7 +62,7 @@ const CommunityContest = () => {
       prize: '5000 USDC',
       status: 'voting' as const,
       creator: '0x9876...5432',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1498936178812-4b2e558d2937?w=400&h=300&fit=crop'
     }
   ];
 
@@ -78,7 +78,7 @@ const CommunityContest = () => {
       prize: '800 USDC',
       status: 'active' as const,
       creator: 'You',
-      image: '/placeholder.svg'
+      image: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=300&fit=crop'
     }
   ];
 
