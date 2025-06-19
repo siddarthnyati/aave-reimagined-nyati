@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useLearnMode } from '@/contexts/LearnModeContext';
-import { X, ChevronLeft, ChevronRight, BookOpen, Target, Lightbulb } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, TrendingUp, DollarSign, BarChart3, AlertTriangle } from 'lucide-react';
 
 interface TourStep {
   id: string;
@@ -12,66 +12,74 @@ interface TourStep {
   content: string;
   target: string;
   position: 'top' | 'bottom' | 'left' | 'right';
-  category: 'basics' | 'portfolio' | 'lending' | 'risk';
+  category: 'basics' | 'rates' | 'analytics' | 'risk';
 }
 
-const tourSteps: TourStep[] = [
+const marketsTourSteps: TourStep[] = [
   {
-    id: 'welcome',
-    title: 'Welcome to DeFi Learning Mode!',
-    content: 'This is a safe simulation environment where you can learn DeFi lending without any real money at risk. Think of it like paper trading for crypto!',
-    target: 'learn-mode-banner',
+    id: 'market-overview',
+    title: 'Understanding Market Overview',
+    content: 'This shows key market metrics: Total Market Size, Available Liquidity, Total Borrows, and Active Users. These numbers help you understand market health and opportunities.',
+    target: 'market-stats',
     position: 'bottom',
     category: 'basics'
   },
   {
-    id: 'portfolio',
-    title: 'Your Virtual Portfolio',
-    content: 'This shows your simulated assets. You start with $10,000 worth of crypto including ETH, USDC, and Bitcoin to practice with.',
-    target: 'portfolio-cards',
+    id: 'supply-apy',
+    title: 'Supply APY - Your Earning Rate',
+    content: 'Supply APY is the annual percentage yield you earn by depositing (supplying) your crypto. Higher APY means more earnings, but consider the underlying risks.',
+    target: 'market-table',
+    position: 'top',
+    category: 'rates'
+  },
+  {
+    id: 'borrow-apy',
+    title: 'Borrow APY - Your Interest Cost',
+    content: 'Borrow APY is what you pay annually to borrow crypto. This rate changes based on supply and demand. Always ensure you can afford the interest payments.',
+    target: 'market-table',
+    position: 'top',
+    category: 'rates'
+  },
+  {
+    id: 'market-filters',
+    title: 'Filter by Asset Type',
+    content: 'Use filters to find specific types of assets: Stablecoins (low risk), Major coins (BTC, ETH), DeFi tokens, or Emerging assets. Each category has different risk profiles.',
+    target: 'market-filters',
     position: 'bottom',
-    category: 'portfolio'
+    category: 'basics'
   },
   {
-    id: 'supply-concept',
-    title: 'Supplying = Depositing',
-    content: 'Supplying crypto is like putting money in a high-yield savings account. You earn interest (APY) while your assets can be used as collateral.',
-    target: 'supply-section',
-    position: 'right',
-    category: 'lending'
+    id: 'market-analytics',
+    title: 'Market Analytics & Trends',
+    content: 'Analytics help you understand market trends, utilization rates, and historical performance. Use this data to make informed lending and borrowing decisions.',
+    target: 'market-analytics',
+    position: 'bottom',
+    category: 'analytics'
   },
   {
-    id: 'borrow-concept',
-    title: 'Borrowing = Taking a Loan',
-    content: 'Borrowing lets you take out loans against your supplied assets. This is useful for leveraging positions or accessing liquidity without selling.',
-    target: 'borrow-section',
+    id: 'flash-news',
+    title: 'Stay Updated with Flash News',
+    content: 'Real-time market updates, rate changes, and protocol news. Staying informed helps you react quickly to market opportunities and risks.',
+    target: 'flash-news',
     position: 'left',
-    category: 'lending'
-  },
-  {
-    id: 'health-factor',
-    title: 'Health Factor = Your Safety Score',
-    content: 'This measures how safe your borrowing position is. Above 2.0 is safe, below 1.0 means liquidation risk. Think of it like your credit utilization ratio.',
-    target: 'health-factor',
-    position: 'bottom',
     category: 'risk'
   }
 ];
 
-const TourGuide = () => {
+const MarketsTourGuide = () => {
   const { tourStep, setTourStep, isTourActive, endTour } = useLearnMode();
   const [currentStep, setCurrentStep] = useState<TourStep | null>(null);
 
   useEffect(() => {
-    if (isTourActive && tourStep < tourSteps.length) {
-      setCurrentStep(tourSteps[tourStep]);
+    if (isTourActive && tourStep < marketsTourSteps.length) {
+      setCurrentStep(marketsTourSteps[tourStep]);
     } else {
       setCurrentStep(null);
     }
   }, [tourStep, isTourActive]);
 
   const nextStep = () => {
-    if (tourStep < tourSteps.length - 1) {
+    if (tourStep < marketsTourSteps.length - 1) {
       setTourStep(tourStep + 1);
     } else {
       endTour();
@@ -86,11 +94,11 @@ const TourGuide = () => {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'basics': return <BookOpen className="w-4 h-4" />;
-      case 'portfolio': return <Target className="w-4 h-4" />;
-      case 'lending': return <Lightbulb className="w-4 h-4" />;
-      case 'risk': return <Target className="w-4 h-4" />;
-      default: return <BookOpen className="w-4 h-4" />;
+      case 'basics': return <TrendingUp className="w-4 h-4" />;
+      case 'rates': return <DollarSign className="w-4 h-4" />;
+      case 'analytics': return <BarChart3 className="w-4 h-4" />;
+      case 'risk': return <AlertTriangle className="w-4 h-4" />;
+      default: return <TrendingUp className="w-4 h-4" />;
     }
   };
 
@@ -98,17 +106,15 @@ const TourGuide = () => {
 
   return (
     <>
-      {/* Enhanced Overlay with higher z-index */}
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" />
       
-      {/* Tour Card with proper z-index */}
       <Card className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[101] w-96 max-w-[90vw] glass-card border-primary/30 shadow-2xl">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-primary/20 text-primary">
                 {getCategoryIcon(currentStep.category)}
-                Step {tourStep + 1} of {tourSteps.length}
+                Markets Step {tourStep + 1} of {marketsTourSteps.length}
               </Badge>
             </div>
             <Button
@@ -141,7 +147,7 @@ const TourGuide = () => {
             </Button>
 
             <div className="flex gap-1">
-              {tourSteps.map((_, index) => (
+              {marketsTourSteps.map((_, index) => (
                 <div
                   key={index}
                   className={`w-2 h-2 rounded-full ${
@@ -155,8 +161,8 @@ const TourGuide = () => {
               onClick={nextStep}
               className="btn-primary flex items-center gap-2"
             >
-              {tourStep === tourSteps.length - 1 ? 'Finish' : 'Next'}
-              {tourStep < tourSteps.length - 1 && <ChevronRight className="w-4 h-4" />}
+              {tourStep === marketsTourSteps.length - 1 ? 'Finish' : 'Next'}
+              {tourStep < marketsTourSteps.length - 1 && <ChevronRight className="w-4 h-4" />}
             </Button>
           </div>
         </CardContent>
@@ -165,4 +171,4 @@ const TourGuide = () => {
   );
 };
 
-export default TourGuide;
+export default MarketsTourGuide;
