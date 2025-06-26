@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CryptoLending from '@/components/borrow/CryptoLending';
 import StockLoans from '@/components/borrow/StockLoans';
-import CryptoStockConnection from '@/components/borrow/CryptoStockConnection';
+import TokenizedRealEstate from '@/components/borrow/TokenizedRealEstate';
 import BrokerageConnection from '@/components/borrow/BrokerageConnection';
 import WalletGuard from '@/components/auth/WalletGuard';
 import LearnModeBanner from '@/components/learn/LearnModeBanner';
@@ -45,7 +45,7 @@ const BorrowLend = () => {
               </h1>
             </ContextualTooltip>
             <p className="text-muted-foreground">
-              Access liquidity through crypto lending and stock-backed borrowing
+              Access liquidity through crypto lending, stock-backed borrowing, and tokenized real estate
             </p>
           </div>
           
@@ -70,11 +70,11 @@ const BorrowLend = () => {
 
         <WalletGuard 
           title="Connect Wallet for Lending Access"
-          description="Access decentralized lending protocols and stock-backed borrowing opportunities."
+          description="Access decentralized lending protocols, stock-backed borrowing, and tokenized real estate opportunities."
           features={[
             "Earn yield on crypto deposits up to 12% APY",
             "Borrow against crypto collateral at competitive rates",
-            "Access stock-backed loans and lending",
+            "Access stock-backed loans and tokenized real estate",
             "Automated yield optimization strategies"
           ]}
           showPreview={true}
@@ -106,9 +106,17 @@ const BorrowLend = () => {
                   </div>
                 </ContextualTooltip>
               </TabsTrigger>
-              <TabsTrigger value="connections" className="flex items-center gap-2">
-                <Building2 className="w-4 h-4" />
-                Connections
+              <TabsTrigger value="real-estate" className="flex items-center gap-2">
+                <ContextualTooltip
+                  title="Tokenized Real Estate"
+                  content="Invest in fractional real estate ownership through blockchain tokens. Earn rental yields and property appreciation while maintaining liquidity."
+                  category="advanced"
+                >
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    Real Estate Tokens
+                  </div>
+                </ContextualTooltip>
               </TabsTrigger>
               <TabsTrigger value="simulator" className="flex items-center gap-2">
                 <ContextualTooltip
@@ -132,9 +140,8 @@ const BorrowLend = () => {
               <StockLoans />
             </TabsContent>
 
-            <TabsContent value="connections" className="space-y-8">
-              <CryptoStockConnection />
-              <BrokerageConnection />
+            <TabsContent value="real-estate">
+              <TokenizedRealEstate />
             </TabsContent>
 
             <TabsContent value="simulator">

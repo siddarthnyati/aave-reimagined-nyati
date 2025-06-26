@@ -16,7 +16,9 @@ import {
   RotateCcw,
   Trophy,
   Activity,
-  BarChart3
+  BarChart3,
+  Pause,
+  Play
 } from 'lucide-react';
 
 interface MarketScenario {
@@ -124,6 +126,8 @@ const SimulatedTradingEnvironment = () => {
     events: []
   });
 
+  const [isSimulationActive, setIsSimulationActive] = useState(false);
+
   // Enhanced asset positions for detailed simulation
   const [assetPositions, setAssetPositions] = useState([
     {
@@ -164,6 +168,126 @@ const SimulatedTradingEnvironment = () => {
     }
   ]);
 
+  // Simulation engine - runs the active simulation
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (isSimulationActive && simState.currentScenario) {
+      interval = setInterval(() => {
+        setSimState(prev => {
+          if (prev.currentDay >= prev.totalDays) {
+            setIsSimulationActive(false);
+            return prev;
+          }
+
+          const newDay = prev.currentDay + 1;
+          const newEvents = [...prev.events];
+          
+          // Generate market events based on scenario
+          if (Math.random() < 0.3) { // 30% chance of event each day
+            const eventTypes = getEventTypesForScenario(prev.currentScenario!);
+            const randomEvent = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+            newEvents.push({
+              day: newDay,
+              event: randomEvent.description,
+              impact: randomEvent.impact
+            });
+
+            // Update asset prices based on event
+            updateAssetPricesForEvent(randomEvent);
+          }
+
+          // Update portfolio values
+          const newPortfolio = calculatePortfolioValue();
+
+          return {
+            ...prev,
+            currentDay: newDay,
+            events: newEvents,
+            portfolio: newPortfolio
+          };
+        });
+      }, 2000); // Advance one day every 2 seconds
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isSimulationActive, simState.currentScenario]);
+
+  const getEventTypesForScenario = (scenario: MarketScenario) => {
+    const eventMap = {
+      'stable-market': [
+        { description: 'Minor market adjustment (-2%)', impact: 'neutral' as const },
+        { description: 'Positive DeFi news (+1%)', impact: 'positive' as const },
+        { description: 'Normal trading volume', impact: 'neutral' as const }
+      ],
+      'bull-market': [
+        { description: 'Major rally (+15%)', impact: 'positive' as const },
+        { description: 'Institutional buying surge (+8%)', impact: 'positive' as const },
+        { description: 'New ATH reached (+20%)', impact: 'positive' as const },
+        { description: 'Small correction (-5%)', impact: 'negative' as const }
+      ],
+      'bear-market': [
+        { description: 'Market crash (-25%)', impact: 'negative' as const },
+        { description: 'Liquidation cascade (-15%)', impact: 'negative' as const },
+        { description: 'Fear selling continues (-10%)', impact: 'negative' as const },
+        { description: 'Dead cat bounce (+5%)', impact: 'positive' as const }
+      ],
+      'volatility-event': [
+        { description: 'Flash crash (-40%)', impact: 'negative' as const },
+        { description: 'Massive liquidations (-30%)', impact: 'negative' as const },
+        { description: 'Recovery attempt (+15%)', impact: 'positive' as const }
+      ],
+      'defi-hack': [
+        { description: 'Protocol exploit discovered', impact: 'negative' as const },
+        { description: 'Emergency withdrawal activated', impact: 'negative' as const },
+        { description: 'Governance vote for compensation', impact: 'neutral' as const }
+      ],
+      'interest-shock': [
+        { description: 'Interest rates spike (+3%)', impact: 'negative' as const },
+        { description: 'Borrowing costs increase', impact: 'negative' as const },
+        { description: 'Lending yields improve', impact: 'positive' as const }
+      ]
+    };
+    
+    return eventMap[scenario.id as keyof typeof eventMap] || eventMap['stable-market'];
+  };
+
+  const updateAssetPricesForEvent = (event: any) => {
+    setAssetPositions(prev => prev.map(asset => {
+      let priceChange = 0;
+      if (event.impact === 'positive') {
+        priceChange = 0.02 + Math.random() * 0.08; // 2-10% increase
+      } else if (event.impact === 'negative') {
+        priceChange = -(0.05 + Math.random() * 0.15); // 5-20% decrease
+      } else {
+        priceChange = (Math.random() - 0.5) * 0.04; // -2% to +2%
+      }
+
+      return {
+        ...asset,
+        price: asset.price * (1 + priceChange)
+      };
+    }));
+  };
+
+  const calculatePortfolioValue = () => {
+    const totalSupplied = assetPositions.reduce((sum, asset) => 
+      sum + (asset.supplied * asset.price), 0
+    );
+    const totalBorrowed = assetPositions.reduce((sum, asset) => 
+      sum + (asset.borrowed * asset.price), 0
+    );
+    
+    return {
+      supplied: totalSupplied,
+      borrowed: totalBorrowed,
+      netWorth: totalSupplied - totalBorrowed,
+      healthFactor: totalBorrowed > 0 ? totalSupplied / totalBorrowed : 0
+    };
+  };
+
   const startScenario = (scenario: MarketScenario) => {
     setSimState(prev => ({
       ...prev,
@@ -171,8 +295,14 @@ const SimulatedTradingEnvironment = () => {
       isRunning: true,
       currentDay: 0,
       totalDays: parseInt(scenario.duration.split(' ')[0]),
-      events: []
+      events: [],
+      portfolio: calculatePortfolioValue()
     }));
+    setIsSimulationActive(true);
+  };
+
+  const pauseResumeSimulation = () => {
+    setIsSimulationActive(!isSimulationActive);
   };
 
   const resetSimulation = () => {
@@ -189,6 +319,7 @@ const SimulatedTradingEnvironment = () => {
         healthFactor: 0
       }
     }));
+    setIsSimulationActive(false);
   };
 
   const handleAssetSupply = (symbol: string, amount: number) => {
@@ -242,7 +373,10 @@ const SimulatedTradingEnvironment = () => {
       <Tabs defaultValue="scenarios" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="scenarios">Market Scenarios</TabsTrigger>
-          <TabsTrigger value="simulation">Active Simulation</TabsTrigger>
+          <TabsTrigger value="simulation">
+            Active Simulation
+            {isSimulationActive && <Badge className="ml-2 bg-green-500 animate-pulse">LIVE</Badge>}
+          </TabsTrigger>
           <TabsTrigger value="assets">Asset Details</TabsTrigger>
           <TabsTrigger value="performance">Performance Analytics</TabsTrigger>
         </TabsList>
@@ -282,8 +416,9 @@ const SimulatedTradingEnvironment = () => {
                   <Button 
                     className="w-full btn-primary"
                     onClick={() => startScenario(scenario)}
+                    disabled={isSimulationActive}
                   >
-                    Start Scenario
+                    {isSimulationActive ? 'Simulation Running...' : 'Start Scenario'}
                   </Button>
                 </CardContent>
               </Card>
@@ -297,11 +432,33 @@ const SimulatedTradingEnvironment = () => {
               <Card className="glass-card">
                 <CardHeader>
                   <div className="flex justify-between items-center">
-                    <CardTitle>{simState.currentScenario.name}</CardTitle>
-                    <Button variant="outline" onClick={resetSimulation}>
-                      <RotateCcw className="w-4 h-4 mr-2" />
-                      Reset
-                    </Button>
+                    <CardTitle className="flex items-center gap-2">
+                      {simState.currentScenario.name}
+                      {isSimulationActive && <Badge className="bg-green-500 animate-pulse">LIVE</Badge>}
+                    </CardTitle>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={pauseResumeSimulation}
+                        disabled={simState.currentDay >= simState.totalDays}
+                      >
+                        {isSimulationActive ? (
+                          <>
+                            <Pause className="w-4 h-4 mr-2" />
+                            Pause
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-4 h-4 mr-2" />
+                            Resume
+                          </>
+                        )}
+                      </Button>
+                      <Button variant="outline" onClick={resetSimulation}>
+                        <RotateCcw className="w-4 h-4 mr-2" />
+                        Reset
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -312,11 +469,11 @@ const SimulatedTradingEnvironment = () => {
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">${simState.portfolio.supplied.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-green-500">${simState.portfolio.supplied.toLocaleString()}</p>
                       <p className="text-sm text-muted-foreground">Supplied</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold">${simState.portfolio.borrowed.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-orange-500">${simState.portfolio.borrowed.toLocaleString()}</p>
                       <p className="text-sm text-muted-foreground">Borrowed</p>
                     </div>
                     <div className="text-center">
@@ -335,13 +492,13 @@ const SimulatedTradingEnvironment = () => {
                       <CardHeader>
                         <CardTitle className="text-sm flex items-center gap-2">
                           <Activity className="w-4 h-4" />
-                          Recent Events
+                          Market Events
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-2">
-                          {simState.events.slice(-3).map((event, index) => (
-                            <div key={index} className="flex justify-between items-center text-sm">
+                        <div className="space-y-2 max-h-32 overflow-y-auto">
+                          {simState.events.slice(-5).reverse().map((event, index) => (
+                            <div key={index} className="flex justify-between items-center text-sm p-2 rounded bg-background/50">
                               <span>Day {event.day}: {event.event}</span>
                               <Badge variant={event.impact === 'positive' ? 'default' : event.impact === 'negative' ? 'destructive' : 'secondary'}>
                                 {event.impact}
@@ -349,6 +506,16 @@ const SimulatedTradingEnvironment = () => {
                             </div>
                           ))}
                         </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {simState.currentDay >= simState.totalDays && (
+                    <Card className="bg-green-50 border-green-200">
+                      <CardContent className="pt-6 text-center">
+                        <Trophy className="w-12 h-12 mx-auto mb-2 text-green-600" />
+                        <h3 className="text-lg font-semibold text-green-800">Simulation Complete!</h3>
+                        <p className="text-green-700">Check the Performance tab for detailed results</p>
                       </CardContent>
                     </Card>
                   )}
@@ -385,16 +552,21 @@ const SimulatedTradingEnvironment = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-green-500">+15.2%</p>
+                  <p className="text-2xl font-bold text-green-500">
+                    {simState.portfolio.netWorth > 10000 ? '+' : ''}
+                    {((simState.portfolio.netWorth - 10000) / 10000 * 100).toFixed(1)}%
+                  </p>
                   <p className="text-sm text-muted-foreground">Total Return</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-500">1.8</p>
-                  <p className="text-sm text-muted-foreground">Sharpe Ratio</p>
+                  <p className="text-2xl font-bold text-blue-500">
+                    {simState.portfolio.healthFactor > 0 ? simState.portfolio.healthFactor.toFixed(2) : '∞'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Current Health Factor</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-orange-500">-5.3%</p>
-                  <p className="text-sm text-muted-foreground">Max Drawdown</p>
+                  <p className="text-2xl font-bold text-orange-500">{simState.events.length}</p>
+                  <p className="text-sm text-muted-foreground">Market Events</p>
                 </div>
               </div>
               
@@ -402,15 +574,21 @@ const SimulatedTradingEnvironment = () => {
                 <h4 className="font-semibold">Asset Performance Breakdown</h4>
                 {assetPositions.map((asset) => {
                   const netReturn = (asset.supplied * asset.supplyAPY) - (asset.borrowed * asset.borrowAPY);
+                  const totalValue = (asset.supplied - asset.borrowed) * asset.price;
                   return (
                     <div key={asset.symbol} className="flex justify-between items-center p-3 bg-muted/20 rounded">
-                      <span className="font-medium">{asset.symbol}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          {asset.symbol[0]}
+                        </div>
+                        <span className="font-medium">{asset.symbol}</span>
+                      </div>
                       <div className="text-right">
-                        <p className={`font-bold ${netReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                          {netReturn >= 0 ? '+' : ''}${netReturn.toFixed(2)}
+                        <p className={`font-bold ${totalValue >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                          ${totalValue.toFixed(2)}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {((netReturn / (asset.supplied * asset.price || 1)) * 100).toFixed(1)}% APY
+                          ${asset.price.toFixed(2)} per token
                         </p>
                       </div>
                     </div>

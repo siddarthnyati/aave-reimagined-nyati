@@ -15,11 +15,11 @@ const CryptoStockConnection = ({ onConnect }: CryptoStockConnectionProps) => {
 
   const cryptoPlatforms = [
     {
-      name: 'Crypto.com',
-      logo: '💎',
-      description: 'Leading crypto exchange with tokenized stocks',
+      name: 'Swarm.com',
+      logo: '🐝',
+      description: 'Leading crypto platform with tokenized stocks and DeFi integration',
       users: '80M+ users',
-      color: 'from-blue-400 to-blue-600',
+      color: 'from-yellow-400 to-orange-600',
       features: ['24/7 Trading', 'Instant Settlement', 'Fractional Shares', 'No Trading Fees']
     },
     {
