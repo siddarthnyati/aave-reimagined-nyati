@@ -76,6 +76,10 @@ const InsuranceModal = ({ isOpen, onClose, borrowAmount, asset, onConfirm }: Ins
     onClose();
   };
 
+  const handleSkipInsuranceChange = (checked: boolean | "indeterminate") => {
+    setSkipInsurance(checked === true);
+  };
+
   const selectedOption = insuranceOptions.find(opt => opt.id === selectedInsurance);
   const estimatedPremium = selectedOption ? (borrowAmount * selectedOption.premium / 100) : 0;
 
@@ -184,7 +188,7 @@ const InsuranceModal = ({ isOpen, onClose, borrowAmount, asset, onConfirm }: Ins
             <Checkbox 
               id="skip-insurance" 
               checked={skipInsurance}
-              onCheckedChange={setSkipInsurance}
+              onCheckedChange={handleSkipInsuranceChange}
             />
             <label htmlFor="skip-insurance" className="text-sm">
               Skip insurance (I understand the risks)
