@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WalletGuard from '@/components/auth/WalletGuard';
+import StrategyAllocationInterface from '@/components/learn/StrategyAllocationInterface';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,7 @@ interface PortfolioItem {
 const AIStrategies = () => {
   const { balance } = useWallet();
   const { toast } = useToast();
+  const [activeStrategies, setActiveStrategies] = useState<Record<string, { active: boolean; allocation: number }>>({});
   const [activeStrategy, setActiveStrategy] = useState<string>('');
   const [showRebalanceModal, setShowRebalanceModal] = useState(false);
   const [isRebalancing, setIsRebalancing] = useState(false);
@@ -68,6 +70,23 @@ const AIStrategies = () => {
   const estimatedTime = '2-5 minutes';
   const projectedYieldChange = '+0.3%';
 
+  const handleStrategyToggle = (strategyId: string, active: boolean, allocation: number) => {
+    setActiveStrategies(prev => ({
+      ...prev,
+      [strategyId]: { active, allocation }
+    }));
+  };
+
+  const handleRebalanceAndOptimize = () => {
+    setShowRebalanceModal(true);
+    
+    // Enhanced rebalancing logic that includes lending optimization
+    toast({
+      title: "🔄 Rebalancing & Optimizing",
+      description: "Rebalancing portfolio and moving funds to highest-yield lending opportunities...",
+    });
+  };
+
   const handleRebalance = () => {
     setShowRebalanceModal(true);
   };
@@ -85,52 +104,36 @@ const AIStrategies = () => {
 
   const strategies = [
     {
-      id: 'conservative',
-      name: 'Conservative Rebalancing',
-      description: 'Low-risk strategy focusing on stable yields with minimal volatility',
-      allocation: { USDC: 50, DAI: 30, ETH: 20 },
-      apy: '5.2%',
+      id: 'auto-supply',
+      name: 'Auto Supply Strategy',
+      description: 'Automatically supply idle assets to highest yield pools across multiple protocols',
+      currentAPY: '8.4%',
       risk: 'Low',
-      performance: '+12.4%',
-      sharpe: '1.8',
-      maxDrawdown: '3.2%',
-      color: 'bg-green-50 border-green-200'
+      category: 'yield-optimization'
     },
     {
-      id: 'balanced',
-      name: 'Balanced Growth',
-      description: 'Moderate risk with optimized yield opportunities across protocols',
-      allocation: { ETH: 40, USDC: 35, BTC: 15, LINK: 10 },
-      apy: '8.7%',
+      id: 'smart-rebalancing',
+      name: 'Smart Rebalancing',
+      description: 'Continuously rebalance portfolio to maintain optimal allocation and maximize returns',
+      currentAPY: '12.7%',
       risk: 'Medium',
-      performance: '+24.1%',
-      sharpe: '2.1',
-      maxDrawdown: '8.7%',
-      color: 'bg-blue-50 border-blue-200'
+      category: 'portfolio-management'
     },
     {
-      id: 'aggressive',
-      name: 'Aggressive Yield',
-      description: 'High-yield farming with dynamic rebalancing for maximum returns',
-      allocation: { ETH: 35, UNI: 25, AAVE: 20, LINK: 20 },
-      apy: '12.4%',
+      id: 'liquidation-protection',
+      name: 'Liquidation Protection',
+      description: 'Monitor health factors and automatically adjust positions to prevent liquidations',
+      currentAPY: '6.2%',
+      risk: 'Low',
+      category: 'risk-management'
+    },
+    {
+      id: 'yield-farming',
+      name: 'Advanced Yield Farming',
+      description: 'Participate in high-yield farming opportunities with automated position management',
+      currentAPY: '18.9%',
       risk: 'High',
-      performance: '+38.9%',
-      sharpe: '1.9',
-      maxDrawdown: '15.3%',
-      color: 'bg-purple-50 border-purple-200'
-    },
-    {
-      id: 'defi-native',
-      name: 'DeFi Native',
-      description: 'Focus on native DeFi tokens with governance participation rewards',
-      allocation: { AAVE: 30, UNI: 25, COMP: 25, CRV: 20 },
-      apy: '10.8%',
-      risk: 'Medium-High',
-      performance: '+31.7%',
-      sharpe: '2.0',
-      maxDrawdown: '12.1%',
-      color: 'bg-orange-50 border-orange-200'
+      category: 'yield-optimization'
     }
   ];
 
@@ -207,7 +210,7 @@ const AIStrategies = () => {
           description="Access advanced AI-powered portfolio rebalancing and automated optimization strategies."
           features={[
             "AI-powered portfolio rebalancing recommendations",
-            "Real-time allocation analysis and optimization",
+            "Real-time allocation analysis and optimization", 
             "Automated strategy execution with cost estimation",
             "Advanced risk management and protection"
           ]}
@@ -237,22 +240,22 @@ const AIStrategies = () => {
             </div>
           </div>
 
-          {/* Portfolio Rebalancing Hero Section */}
+          {/* Enhanced Portfolio Rebalancing Hero Section */}
           <Card className="glass-card mb-8">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="w-5 h-5" />
-                    Portfolio Rebalancing
+                    Portfolio Rebalancing & Yield Optimization
                   </CardTitle>
                   <CardDescription>
-                    AI-powered portfolio optimization based on your risk profile and market conditions
+                    AI-powered portfolio optimization with automated lending for maximum yield
                   </CardDescription>
                 </div>
                 <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
                   <AlertTriangle className="w-3 h-3 mr-1" />
-                  Rebalance Recommended
+                  Optimization Available
                 </Badge>
               </div>
             </CardHeader>
@@ -310,16 +313,17 @@ const AIStrategies = () => {
 
               <div className="flex items-center justify-between pt-4 border-t">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium">Rebalancing Impact</p>
+                  <p className="text-sm font-medium">Rebalance & Optimize Impact</p>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <span>Cost: ${estimatedCost}</span>
                     <span>Time: {estimatedTime}</span>
                     <span className="text-green-600">Yield: {projectedYieldChange}</span>
+                    <span className="text-blue-600">APY Boost: +2.1%</span>
                   </div>
                 </div>
-                <Button onClick={handleRebalance} className="btn-primary">
+                <Button onClick={handleRebalanceAndOptimize} className="btn-primary">
                   <Target className="w-4 h-4 mr-2" />
-                  Rebalance Portfolio
+                  Rebalance & Optimize Yield
                 </Button>
               </div>
             </CardContent>
@@ -404,12 +408,35 @@ const AIStrategies = () => {
             </DialogContent>
           </Dialog>
 
-          <Tabs defaultValue="active" className="space-y-8">
+          <Tabs defaultValue="strategies" className="space-y-8">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="active">Active Strategies</TabsTrigger>
-              <TabsTrigger value="library">Strategy Library</TabsTrigger>
+              <TabsTrigger value="strategies">AI Strategies</TabsTrigger>
+              <TabsTrigger value="active">Active Management</TabsTrigger>
               <TabsTrigger value="advanced">Advanced Settings</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="strategies" className="space-y-6">
+              <div className="grid grid-cols-1 gap-6">
+                {strategies.map((strategy) => (
+                  <Card key={strategy.id} className="glass-card">
+                    <CardContent className="p-6">
+                      <StrategyAllocationInterface
+                        strategyName={strategy.name}
+                        strategyDescription={strategy.description}
+                        isActive={activeStrategies[strategy.id]?.active || false}
+                        onToggle={(active, allocation) => handleStrategyToggle(strategy.id, active, allocation)}
+                      />
+                      
+                      <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Current APY: <span className="font-bold text-green-500">{strategy.currentAPY}</span></span>
+                        <span>Risk Level: <span className={`font-bold ${strategy.risk === 'Low' ? 'text-green-500' : strategy.risk === 'Medium' ? 'text-yellow-500' : 'text-red-500'}`}>{strategy.risk}</span></span>
+                        <Badge variant="outline">{strategy.category}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
 
             <TabsContent value="active" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -482,67 +509,6 @@ const AIStrategies = () => {
                         <Button variant="destructive" size="sm" className="ml-4">
                           <Pause className="w-4 h-4" />
                         </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="library" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {strategies.map((strategy) => (
-                  <Card key={strategy.id} className={`glass-card transition-all hover:shadow-md ${activeStrategy === strategy.id ? 'ring-2 ring-primary' : ''}`}>
-                    <CardContent className="p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-xl font-semibold">{strategy.name}</h3>
-                            <Badge variant={strategy.risk === 'Low' ? 'secondary' : strategy.risk === 'Medium' ? 'default' : 'destructive'}>
-                              {strategy.risk} Risk
-                            </Badge>
-                            <Badge variant="outline" className="bg-green-950 text-green-400 border-green-800">
-                              {strategy.apy} APY
-                            </Badge>
-                          </div>
-                          <p className="text-muted-foreground mb-4">{strategy.description}</p>
-                          
-                          <div className="grid grid-cols-3 gap-4 text-sm mb-4">
-                            <div>
-                              <span className="text-muted-foreground">Performance</span>
-                              <div className="font-bold text-green-400">{strategy.performance}</div>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Sharpe Ratio</span>
-                              <div className="font-bold">{strategy.sharpe}</div>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Max Drawdown</span>
-                              <div className="font-bold text-red-400">{strategy.maxDrawdown}</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-3">
-                        <Button variant="outline" className="flex-1">
-                          <BarChart3 className="w-4 h-4 mr-2" />
-                          Simulate Strategy
-                        </Button>
-                        {activeStrategy === strategy.id ? (
-                          <Button variant="destructive" className="flex-1">
-                            <Pause className="w-4 h-4 mr-2" />
-                            Deactivate
-                          </Button>
-                        ) : (
-                          <Button 
-                            onClick={() => setActiveStrategy(strategy.id)}
-                            className="flex-1"
-                          >
-                            <Play className="w-4 h-4 mr-2" />
-                            Activate
-                          </Button>
-                        )}
                       </div>
                     </CardContent>
                   </Card>

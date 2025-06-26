@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { useLearnMode } from '@/contexts/LearnModeContext';
+import AssetWiseSimulation from './AssetWiseSimulation';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -14,7 +14,9 @@ import {
   AlertTriangle,
   PlayCircle,
   RotateCcw,
-  Trophy
+  Trophy,
+  Activity,
+  BarChart3
 } from 'lucide-react';
 
 interface MarketScenario {
@@ -84,6 +86,28 @@ const marketScenarios: MarketScenario[] = [
   }
 ];
 
+const enhancedMarketScenarios = [
+  ...marketScenarios,
+  {
+    id: 'defi-hack',
+    name: 'Protocol Hack Event',
+    description: 'Experience a major DeFi protocol hack and learn crisis management. Practice emergency procedures and fund protection.',
+    difficulty: 'advanced' as const,
+    duration: '14 days',
+    volatility: 'high' as const,
+    expectedOutcome: 'Learn protocol risk management and emergency responses'
+  },
+  {
+    id: 'interest-shock',
+    name: 'Interest Rate Shock',
+    description: 'Navigate sudden interest rate changes affecting lending protocols. Learn to adapt to changing yield environments.',
+    difficulty: 'intermediate' as const,
+    duration: '45 days',
+    volatility: 'medium' as const,
+    expectedOutcome: 'Understand interest rate risk and adaptation strategies'
+  }
+];
+
 const SimulatedTradingEnvironment = () => {
   const { learnModeData, updateLearnModeData } = useLearnMode();
   const [simState, setSimState] = useState<SimulationState>({
@@ -99,6 +123,46 @@ const SimulatedTradingEnvironment = () => {
     totalDays: 30,
     events: []
   });
+
+  // Enhanced asset positions for detailed simulation
+  const [assetPositions, setAssetPositions] = useState([
+    {
+      symbol: 'ETH',
+      name: 'Ethereum',
+      supplied: 2.5,
+      borrowed: 0,
+      supplyAPY: 3.2,
+      borrowAPY: 5.8,
+      price: 2000,
+      liquidationPrice: null,
+      healthFactor: 0,
+      ltv: 0
+    },
+    {
+      symbol: 'USDC',
+      name: 'USD Coin',
+      supplied: 5000,
+      borrowed: 0,
+      supplyAPY: 4.1,
+      borrowAPY: 6.2,
+      price: 1,
+      liquidationPrice: null,
+      healthFactor: 0,
+      ltv: 0
+    },
+    {
+      symbol: 'BTC',
+      name: 'Bitcoin',
+      supplied: 0,
+      borrowed: 0.1,
+      supplyAPY: 2.8,
+      borrowAPY: 4.9,
+      price: 35000,
+      liquidationPrice: 28000,
+      healthFactor: 2.1,
+      ltv: 0.6
+    }
+  ]);
 
   const startScenario = (scenario: MarketScenario) => {
     setSimState(prev => ({
@@ -127,6 +191,22 @@ const SimulatedTradingEnvironment = () => {
     }));
   };
 
+  const handleAssetSupply = (symbol: string, amount: number) => {
+    setAssetPositions(prev => prev.map(asset => 
+      asset.symbol === symbol 
+        ? { ...asset, supplied: asset.supplied + amount }
+        : asset
+    ));
+  };
+
+  const handleAssetBorrow = (symbol: string, amount: number) => {
+    setAssetPositions(prev => prev.map(asset => 
+      asset.symbol === symbol 
+        ? { ...asset, borrowed: asset.borrowed + amount }
+        : asset
+    ));
+  };
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner': return 'bg-green-500/20 text-green-400 border-green-500/30';
@@ -151,24 +231,25 @@ const SimulatedTradingEnvironment = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 gradient-text">
             <PlayCircle className="w-6 h-6" />
-            DeFi Trading Simulator
+            Enhanced DeFi Trading Simulator
           </CardTitle>
           <p className="text-muted-foreground">
-            Practice lending and borrowing strategies in realistic market conditions without real money at risk
+            Practice advanced lending and borrowing strategies with detailed asset-wise tracking and realistic market scenarios
           </p>
         </CardHeader>
       </Card>
 
       <Tabs defaultValue="scenarios" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="scenarios">Market Scenarios</TabsTrigger>
           <TabsTrigger value="simulation">Active Simulation</TabsTrigger>
-          <TabsTrigger value="results">Performance</TabsTrigger>
+          <TabsTrigger value="assets">Asset Details</TabsTrigger>
+          <TabsTrigger value="performance">Performance Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="scenarios" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {marketScenarios.map((scenario) => (
+            {enhancedMarketScenarios.map((scenario) => (
               <Card key={scenario.id} className="glass-card hover:scale-105 transition-all">
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
@@ -247,6 +328,30 @@ const SimulatedTradingEnvironment = () => {
                       <p className="text-sm text-muted-foreground">Health Factor</p>
                     </div>
                   </div>
+
+                  {/* Real-time Events */}
+                  {simState.events.length > 0 && (
+                    <Card className="bg-muted/20">
+                      <CardHeader>
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Activity className="w-4 h-4" />
+                          Recent Events
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {simState.events.slice(-3).map((event, index) => (
+                            <div key={index} className="flex justify-between items-center text-sm">
+                              <span>Day {event.day}: {event.event}</span>
+                              <Badge variant={event.impact === 'positive' ? 'default' : event.impact === 'negative' ? 'destructive' : 'secondary'}>
+                                {event.impact}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -255,23 +360,62 @@ const SimulatedTradingEnvironment = () => {
               <CardContent className="p-8 text-center">
                 <PlayCircle className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="text-xl font-semibold mb-2">No Active Simulation</h3>
-                <p className="text-muted-foreground">Select a market scenario to begin your simulation</p>
+                <p className="text-muted-foreground">Select a market scenario to begin your detailed simulation</p>
               </CardContent>
             </Card>
           )}
         </TabsContent>
 
-        <TabsContent value="results" className="space-y-6">
+        <TabsContent value="assets" className="space-y-6">
+          <AssetWiseSimulation 
+            positions={assetPositions}
+            onSupply={handleAssetSupply}
+            onBorrow={handleAssetBorrow}
+          />
+        </TabsContent>
+
+        <TabsContent value="performance" className="space-y-6">
           <Card className="glass-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                Simulation Results
+                <BarChart3 className="w-5 h-5" />
+                Performance Analytics
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">Complete a simulation to see your performance results</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-green-500">+15.2%</p>
+                  <p className="text-sm text-muted-foreground">Total Return</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-blue-500">1.8</p>
+                  <p className="text-sm text-muted-foreground">Sharpe Ratio</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-orange-500">-5.3%</p>
+                  <p className="text-sm text-muted-foreground">Max Drawdown</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 space-y-4">
+                <h4 className="font-semibold">Asset Performance Breakdown</h4>
+                {assetPositions.map((asset) => {
+                  const netReturn = (asset.supplied * asset.supplyAPY) - (asset.borrowed * asset.borrowAPY);
+                  return (
+                    <div key={asset.symbol} className="flex justify-between items-center p-3 bg-muted/20 rounded">
+                      <span className="font-medium">{asset.symbol}</span>
+                      <div className="text-right">
+                        <p className={`font-bold ${netReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                          {netReturn >= 0 ? '+' : ''}${netReturn.toFixed(2)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {((netReturn / (asset.supplied * asset.price || 1)) * 100).toFixed(1)}% APY
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
